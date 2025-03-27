@@ -1,0 +1,21 @@
+import './bootstrap';
+import $ from 'jquery';
+import Alpine from 'alpinejs';
+
+window.Alpine = Alpine;
+
+Alpine.start();
+
+window.$ = window.jQuery = $;
+import { Calendar } from '@fullcalendar/core';
+import dayGridPlugin from '@fullcalendar/daygrid';
+
+document.addEventListener('DOMContentLoaded', function () {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new Calendar(calendarEl, {
+        plugins: [dayGridPlugin],
+        initialView: 'dayGridMonth'
+    });
+    calendar.render();
+});
+
