@@ -7,6 +7,7 @@ use App\Http\Controllers\HistorialClinicoController;
 use App\Http\Controllers\HistorialController;
 use App\Http\Controllers\InventarioController;
 use App\Http\Controllers\NotificacionController;
+use App\Http\Middleware\RedirectIfClient;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
@@ -51,7 +52,8 @@ Route::get('/google-auth/callback', function () {
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+})->middleware(['auth', 'verified', \App\Http\Middleware\RedirectIfClient::class])->name('dashboard');
+
 
 Route::get('/virtual', [TicketVirtualController::class, 'getReservas']);
 Route::get('/horario', [TicketVirtualController::class, 'getHorarios']);

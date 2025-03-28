@@ -274,273 +274,153 @@
           </div>
       </div>
       <script>
-        var isAuthenticated = @json($isAuthenticated); // Se pasa la variable isAuthenticated
+        var isAuthenticated = @json($isAuthenticated); 
         var emailSesion = @json($emailSesion);
         var userName = @json($userName);  
-   document.addEventListener("DOMContentLoaded", function () {
-       document.body.classList.remove("opacity-0");
-   });
-   var a;
-   
-   document.addEventListener('DOMContentLoaded', function() {
-       var calendarEl = document.getElementById('calendar');
-       var horariosCache = {};  // Objeto para almacenar las respuestas en caché
-
-var calendar = new FullCalendar.Calendar(calendarEl, {
-    initialView: 'dayGridMonth',
-    locale: 'es',
-    editable: true,
-    selectable: true,
-    allDaySlot: false,
-    events: '/virtual',
-    dateClick: function(info) {
-        a = info.dateStr;
-        var numDia = new Date(a).getDay();
-        var dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
-        var fechaSeleccionada = new Date(a);
-        var fechaActual = new Date();
-        fechaActual.setHours(0, 0, 0, 0);
-        fechaSeleccionada.setHours(0, 0, 0, 0); // Eliminar la hora para comparar solo la fecha
-
-        setTimeout(function() {
-            document.getElementById("contenedor").classList.add("hidden");
-        }, 1000);  
-
-        var fechaMinimaPermitida = new Date(fechaActual);
-        fechaMinimaPermitida.setDate(fechaActual.getDate() - 2);
-        
-        if (fechaSeleccionada <= fechaMinimaPermitida) {
-            document.getElementById("modal_alerta").classList.remove("hidden"); // Mostrar modal de alerta
-            return; // Salir de la función
-        }
-
-        if (!isAuthenticated) { // Si no está autenticado
-            document.getElementById("modal_sesion").classList.remove("hidden");
-        } else {
-            if (numDia === 6) { // Si es domingo
-                alert("No se atiende los días domingos.");
-            } else {
-                document.getElementById("modal_virtual").classList.remove("hidden");
-                document.getElementById('dia').textContent = dias[numDia] + " " + a;
-                var fecha = info.dateStr; // Obtener la fecha seleccionada
-
-                // Verificar si ya tenemos los horarios de esta fecha en caché
-                if (horariosCache[fecha]) {
-                    // Si los horarios ya están en caché, los mostramos directamente
-                    actualizarHorarios(horariosCache[fecha]);
-                } else {
-                    // Si no están en caché, hacemos la solicitud AJAX
-                    var url = "/horario"; // Ruta del controlador que obtiene los horarios
-                    document.getElementById("contenedor").classList.remove("hidden");
-                    $.get(url, { fecha: fecha }, function(datos) {
-                        // Guardamos la respuesta en caché para futuras consultas
-                        horariosCache[fecha] = datos;
-                        actualizarHorarios(datos);
+    
+        document.addEventListener("DOMContentLoaded", function () {
+            document.body.classList.remove("opacity-0");
+    
+            const modalVirtual = document.getElementById("modal_virtual");
+            const modalFormulario = document.getElementById("modal_formulario");
+            const modalSesion = document.getElementById("modal_sesion");
+            const modalAlerta = document.getElementById("modal_alerta");
+    
+            const closeModalVirtual = document.getElementById("close-modal");
+            const closeModalFormulario = document.getElementById("cerrar-modal");
+            const closeModalSesion = document.getElementById("cerrarr-modal");
+            const closeModalAlerta = document.getElementById("cloze-modal");
+    
+            const calendarEl = document.getElementById('calendar');
+            let horariosCache = {};  // Cache de horarios
+    
+            const calendar = new FullCalendar.Calendar(calendarEl, {
+                initialView: 'dayGridMonth',
+                locale: 'es',
+                editable: true,
+                selectable: true,
+                allDaySlot: false,
+                events: '/virtual',
+                dateClick: function(info) {
+                    let a = info.dateStr;
+                    let numDia = new Date(a).getDay();
+                    let dias = ["Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+                    let fechaSeleccionada = new Date(a);
+                    let fechaActual = new Date();
+                    fechaActual.setHours(0, 0, 0, 0);
+                    fechaSeleccionada.setHours(0, 0, 0, 0); 
+    
+                    setTimeout(() => {
+                        document.getElementById("contenedor").classList.add("hidden");
+                    }, 500);  
+    
+                    let fechaMinimaPermitida = new Date(fechaActual);
+                    fechaMinimaPermitida.setDate(fechaActual.getDate() - 2);
+    
+                    if (fechaSeleccionada <= fechaMinimaPermitida) {
+                        document.getElementById("modal_alerta").classList.remove("hidden");
+                        return;
+                    }
+    
+                    if (!isAuthenticated) {
+                        document.getElementById("modal_sesion").classList.remove("hidden");
+                    } else {
+                        if (numDia === 6) { 
+                            alert("No se atiende los días domingos.");
+                        } else {
+                            document.getElementById("modal_virtual").classList.remove("hidden");
+                            document.getElementById('dia').textContent = dias[numDia] + " " + a;
+                            if (horariosCache[a]) {
+                                actualizarHorarios(horariosCache[a]);
+                            } else {
+                                $.get("/horario", { fecha: a }, function(datos) {
+                                    horariosCache[a] = datos;
+                                    actualizarHorarios(datos);
+                                });
+                            }
+                        }
+                    }
+                }
+            });
+    
+            function actualizarHorarios(datos) {
+                document.getElementById("contenedor").classList.add("hidden");
+    
+                $('#h1, #h2, #h3, #h4, #h5, #h6, #h7, #h8')
+                    .attr('disabled', false)
+                    .removeClass('bg-red-500');
+    
+                const horasMapeadas = {
+                    '08:30 - 09:30': '#h1',
+                    '09:30 - 10:30': '#h2',
+                    '10:30 - 11:30': '#h3',
+                    '11:30 - 12:00': '#h4',
+                    '15:00 - 16:00': '#h5',
+                    '16:00 - 17:00': '#h6',
+                    '17:00 - 18:00': '#h7',
+                    '18:00 - 20:00': '#h8'
+                };
+    
+                if (datos.ocupadas && datos.ocupadas.length > 0) {
+                    datos.ocupadas.forEach(function(hora) {
+                        if (horasMapeadas[hora]) {
+                            $(horasMapeadas[hora])
+                                .attr('disabled', true)
+                                .addClass('bg-red-500');
+                        }
                     });
                 }
+    
+                $("#h1, #h2, #h3, #h4, #h5, #h6, #h7, #h8").click(function() {
+                    let hora = $(this).attr("id").substring(1); 
+                    let fecha = document.getElementById('dia').textContent;
+    
+                    $.post("/reservar", { fecha: fecha, hora: hora }, function(respuesta) {
+                        if (respuesta.exito) {
+                            alert("Reserva realizada con éxito");
+                            horariosCache[fecha].ocupadas.push(respuesta.hora);
+                            $(this).attr('disabled', true).addClass('bg-red-500');
+                        } else {
+                            alert("Error al realizar la reserva");
+                        }
+                    });
+                });
             }
-        }
-    }
-});
-
-// Función que actualiza los horarios en el frontend
-function actualizarHorarios(datos) {
-    // Ocultar el contenedor cuando termine de cargar
-    document.getElementById("contenedor").classList.add("hidden");
-
-    $('#h1, #h2, #h3, #h4, #h5, #h6, #h7, #h8')
-        .attr('disabled', false)
-        .removeClass('bg-red-500');
-
-    const horasMapeadas = {
-        '08:30 - 09:30': '#h1',
-        '09:30 - 10:30': '#h2',
-        '10:30 - 11:30': '#h3',
-        '11:30 - 12:00': '#h4',
-        '15:00 - 16:00': '#h5',
-        '16:00 - 17:00': '#h6',
-        '17:00 - 18:00': '#h7',
-        '18:00 - 20:00': '#h8'
-    };
-
-    // Actualizar los horarios ocupados
-    if (datos.ocupadas && datos.ocupadas.length > 0) {
-        datos.ocupadas.forEach(function(hora) {
-            if (horasMapeadas[hora]) {
-                $(horasMapeadas[hora])
-                    .attr('disabled', true)
-                    .addClass('bg-red-500');
+    
+            // Cerrar modales al hacer clic en los botones dentro del modal
+            if (closeModalVirtual) {
+                closeModalVirtual.addEventListener("click", function () {
+                    modalVirtual.classList.add("hidden");
+                });
             }
+            if (closeModalFormulario) {
+                closeModalFormulario.addEventListener("click", function () {
+                    modalFormulario.classList.add("hidden");
+                });
+            }
+            if (closeModalSesion) {
+                closeModalSesion.addEventListener("click", function () {
+                    modalSesion.classList.add("hidden");
+                });
+            }
+            if (closeModalAlerta) {
+                closeModalAlerta.addEventListener("click", function () {
+                    modalAlerta.classList.add("hidden");
+                });
+            }
+    
+            // Cerrar modales al hacer clic fuera del contenido
+            window.addEventListener("click", function (event) {
+                if (event.target === modalVirtual) modalVirtual.classList.add("hidden");
+                if (event.target === modalFormulario) modalFormulario.classList.add("hidden");
+                if (event.target === modalSesion) modalSesion.classList.add("hidden");
+                if (event.target === modalAlerta) modalAlerta.classList.add("hidden");
+            });
+    
+            calendar.render();
         });
-    }
-
-    // Lógica para realizar una reserva
-    $("#h1, #h2, #h3, #h4, #h5, #h6, #h7, #h8").click(function() {
-        var hora = $(this).attr("id").substring(1);  // Obtener la hora correspondiente
-        var fecha = document.getElementById('dia').textContent;  // Obtener la fecha seleccionada
-
-        // Realizar la reserva
-        $.post("/reservar", { fecha: fecha, hora: hora }, function(respuesta) {
-            if (respuesta.exito) {
-                alert("Reserva realizada con éxito");
-                // Actualizar la caché y la interfaz con la nueva reserva
-                horariosCache[fecha].ocupadas.push(respuesta.hora); // Agregar la nueva hora ocupada en caché
-                $(this).attr('disabled', true).addClass('bg-red-500'); // Deshabilitar el horario reservado
-            } else {
-                alert("Error al realizar la reserva");
-            }
-        });
-    });
-}
-
-             calendar.render();
-             document.getElementById("close-modal").addEventListener("click", ()=> {
-           document.getElementById("modal_virtual").classList.add("hidden");
-       });
-       document.getElementById("cerrar-modal").addEventListener("click",()=> {
-           document.getElementById("modal_formulario").classList.add("hidden");
-       });
-       document.getElementById("cerrarr-modal").addEventListener("click",()=> {
-           document.getElementById("modal_sesion").classList.add("hidden");
-       });
-       document.getElementById("cloze-modal").addEventListener("click",()=> {
-           document.getElementById("modal_alerta").classList.add("hidden");
-       });
-       // Cerrar el modal si se hace clic fuera del contenido
-       document.getElementById("modal_virtual").addEventListener("click", function(event) {
-           if (event.target === this) {
-               this.classList.add("hidden");
-           }
-       });
-       document.getElementById("modal_sesion").addEventListener("click", function(event) {
-           if (event.target === this) {
-               this.classList.add("hidden");
-           }
-       });
-           });
-           document.addEventListener("DOMContentLoaded", function () {
-       const modal = document.getElementById("crud-modal");
-       const openModalButtons = document.querySelectorAll("[data-modal-toggle='crud-modal']");
-       const closeModalButton = modal.querySelector("[data-modal-toggle='crud-modal']");
-       
-       // Función para cerrar el modal con animación
-       
-       // Asignar eventos a los botones de apertura
-       openModalButtons.forEach(button => {
-           button.addEventListener("click", openModal);
-       });
-       // Asignar evento al botón de cierre
-       closeModalButton.addEventListener("click", closeModal);
-   
-       // Cerrar el modal si se hace clic fuera del contenido
-       modal.addEventListener("click", function (event) {
-           if (event.target === modal) {
-               closeModal();
-           }
-       });
-       
-   });
-   document.getElementById("h1").addEventListener("click", function() {
-       document.getElementById("modal_formulario").classList.remove("hidden");
-     var h1= "08:30 - 09:30" ;
-       document.getElementById('fecha_reserva').value = a;
-       document.getElementById('hora_reserva').value = h1;
-   });
-   document.getElementById("h2").addEventListener("click", function() {
-       document.getElementById("modal_formulario").classList.remove("hidden");
-     var h2= "09:30 - 10:30" ;
-       document.getElementById('fecha_reserva').value = a;
-       document.getElementById('hora_reserva').value = h2;
-   });
-   document.getElementById("h3").addEventListener("click", function() {
-       document.getElementById("modal_formulario").classList.remove("hidden");
-     var h3= "10:30 - 11:30" ;
-       document.getElementById('fecha_reserva').value = a;
-       document.getElementById('hora_reserva').value = h3;
-   });
-   document.getElementById("h4").addEventListener("click", function() {
-       document.getElementById("modal_formulario").classList.remove("hidden");
-     var h4= "11:30 - 12:00" ;
-       document.getElementById('fecha_reserva').value = a;
-       document.getElementById('hora_reserva').value = h4;
-   });
-   document.getElementById("h5").addEventListener("click", function() {
-       document.getElementById("modal_formulario").classList.remove("hidden");
-     var h5= "15:00 - 16:00" ;
-       document.getElementById('fecha_reserva').value = a;
-       document.getElementById('hora_reserva').value = h5;
-   });
-   document.getElementById("h6").addEventListener("click", function() {
-       document.getElementById("modal_formulario").classList.remove("hidden");
-     var h6= "16:00 - 17:00" ;
-       document.getElementById('fecha_reserva').value = a;
-       document.getElementById('hora_reserva').value = h6;
-   });
-   document.getElementById("h7").addEventListener("click", function() {
-       document.getElementById("modal_formulario").classList.remove("hidden");
-     var h7= "17:00 - 18:00" ;
-       document.getElementById('fecha_reserva').value = a;
-       document.getElementById('hora_reserva').value = h7;
-   });
-   document.getElementById("h8").addEventListener("click", function() {
-       document.getElementById("modal_formulario").classList.remove("hidden");
-     var h8= "18:00 - 20:00" ;
-       document.getElementById('fecha_reserva').value = a;
-       document.getElementById('hora_reserva').value = h8;
-   });
-   document.addEventListener("DOMContentLoaded", function () {
-       const modalVirtual = document.getElementById("modal_virtual");
-           const modalFormulario = document.getElementById("modal_formulario");
-           const modalSesion = document.getElementById("modal_sesion");
-           const modalAlerta = document.getElementById("modal_alerta");
-           const closeModalVirtual = document.getElementById("close-modal");
-           const closeModalFormulario = document.getElementById("cerrar-modal");
-           const closeModalSesion = document.getElementById("cerrarr-modal");
-           const closeModalAlerta = document.getElementById("cloze-modal");
-           // Función para cerrar el modal
-           function closeModal(modal) {
-               if (modal) {
-                   modal.classList.add("hidden");
-               }
-           }  
-           // Agregar eventos de clic a los botones de cierre
-           if (closeModalVirtual) {
-               closeModalVirtual.addEventListener("click", function () {
-                   closeModal(modalVirtual);
-               });
-           }
-           if (closeModalFormulario) {
-               closeModalFormulario.addEventListener("click", function () {
-                   closeModal(modalFormulario);
-               });
-           }
-           if (closeModalSesion) {
-               closeModalSesion.addEventListener("click", function () {
-                   closeModal(modalSesion);
-               });
-           }
-           if (closeModalAlerta) {
-               closeModalAlerta.addEventListener("click", function () {
-                   closeModal(modalAlerta);
-               });
-           }
-           // Opcional: cerrar modal al hacer clic fuera de él
-           window.addEventListener("click", function (event) {
-               if (event.target === modalVirtual) {
-                   closeModal(modalVirtual);
-               }
-               if (event.target === modalFormulario) {
-                   closeModal(modalFormulario);
-               }
-               if (event.target === modalSesion) {
-                   closeModal(modalSesion);
-               }
-               if (event.target === modalAlerta) {
-                   closeModal(modalAlerta);
-               }
-           });
-   });
-   </script>
+    </script>
+    
    <style>
     .scrollbar-hide::-webkit-scrollbar {
         display: none;

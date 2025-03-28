@@ -10,9 +10,14 @@ use App\Notifications\ReservaCreada;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-
+use Illuminate\Routing\Controller;
 class TicketVirtualController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(\App\Http\Middleware\VerificarCliente::class)->only(['store', 'index', 'inicio']);
+    }
+    
     public function index()
     {    $user=User::get();
         $servicios = \App\Models\Servicio::all();
