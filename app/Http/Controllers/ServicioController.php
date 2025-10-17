@@ -110,5 +110,30 @@ class ServicioController extends Controller
         'duracion' => $servicio->duracion // formato: "HH:MM"
     ]);
 }
+    public function deleted()
+    {
+        $deletedServicios = Servicio::onlyTrashed()->paginate(10);
+        return view('servicio_elim', compact('deletedServicios'));
+    }
+    public function restore($id)
+    {
+        $servicio = Servicio::onlyTrashed()->findOrFail($id);
+        $servicio->restore();
+        return redirect()->back()->with('success', 'Servicio restaurado correctamente.');
+    }
+    public function forceDelete($id)
+    {
+        $servicio = Servicio::onlyTrashed()->findOrFail($id);
+        $servicio->forceDelete();
+        return redirect()->back()->with('success', 'Servicio eliminado permanentemente.');
+    }
+    public function forceDeleteAll()
+    {
+        $servicios = Servicio::onlyTrashed()->get();
+        foreach ($servicios as $servicio) {
+            $servicio->forceDelete();
+        }
+        return redirect()->back()->with('success', 'Todos los servicios eliminados fueron eliminados permanentemente.');
+    }
 
 }

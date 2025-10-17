@@ -55,7 +55,7 @@
                         <button id="darkmode">🌙</button>
                     </li>
                     <li class="text-blue-600 font-semibold"><a href="{{ url('/') }}">Inicio</a></li>
-                    <li><a href="#">La Clínica</a></li>
+                    <li><a href="{{ url('/clinica') }}">La Clínica</a></li>
 
                     <li><a href="#">Planes de Salud</a></li>
                     <li class="flex items-center space-x-4">
@@ -119,7 +119,7 @@
                             <button id="darkmode1">🌙</button>
                         </li>
                         <li class="text-blue-600 font-semibold"><a href="{{ url('/') }}">Inicio</a></li>
-                        <li><a href="#">La Clínica</a></li>
+                        <li><a href="{{ url('/clinica') }}">La Clínica</a></li>
                         <li><a href="#">Nuestros Centros</a></li>
                         <li><a href="#">Planes de Salud</a></li>
                         @if (Route::has('login'))
@@ -220,15 +220,15 @@
                         @php
                            $pacientesInfo = [];
 
-if (isset($propietario) && $propietario) {
-    foreach ($propietario->pacientes as $paciente) {
-        $pacientesInfo[] = [
-            'id' => $paciente->id,
-            'nombre' => $paciente->nombre,
-            'especie' => $paciente->especie,
-        ];
-    }
-}
+                                if (isset($propietario) && $propietario) {
+                                    foreach ($propietario->pacientes as $paciente) {
+                                        $pacientesInfo[] = [
+                                            'id' => $paciente->id,
+                                            'nombre' => $paciente->nombre,
+                                            'especie' => $paciente->especie,
+                                        ];
+                                    }
+                                }
                         @endphp
                         <label class="block text-sm font-medium">Nombre de la mascota</label>
                         @if ($propietario && $propietario->pacientes->count())
@@ -246,9 +246,6 @@ if (isset($propietario) && $propietario) {
                         <label class="block text-sm font-medium">Fecha de reserva</label>
                         <input type="text" id="fecha_reserva" name="fecha_cita"
                             class="w-full px-4 py-2 border rounded-md dark:bg-gray-800 dark:text-white" readonly>
-
-                        
-
                     </div>
                     <div>
                         <label class="block text-sm font-medium">Correo Electrónico</label>
@@ -283,7 +280,6 @@ if (isset($propietario) && $propietario) {
                             class="w-full px-4 py-2 border rounded-md dark:bg-gray-800 dark:text-white" required>
                             <option value="">-- Seleccione una hora --</option>
                         </select>
-
                     </div>
                 </div>
                 <div class="flex justify-end">
@@ -296,6 +292,12 @@ if (isset($propietario) && $propietario) {
             </form>
         </div>
     </div>
+    <footer class="bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 py-6 mt-10">
+        <div class="max-w-6xl mx-auto px-6 lg:px-8 text-center">
+            <p class="text-sm">&copy; 2025 Clínica Veterinaria ODY. Todos los derechos reservados.</p>
+            <p class="text-sm mt-2">Dirección: Calle Beni Casi frente al hospital Eduardo Eguía, Tupiza, Bolivia | Teléfono: +591 65468983</p>
+        </div>
+    </footer>
     <script>
         var isAuthenticated = @json($isAuthenticated); // Se pasa la variable isAuthenticated
         var emailSesion = @json($emailSesion);
@@ -431,105 +433,131 @@ if (isset($propietario) && $propietario) {
                 }
             });
         });
-        document.getElementById('servicio_id').addEventListener('change', function() {
-            let servicioSeleccionado = this.options[this.selectedIndex].text.toLowerCase();
-            let selectHorario = document.getElementById('hora_reserva');
-            let fechaSeleccionada = document.getElementById("fecha_reserva").value;
+    document.getElementById('servicio_id').addEventListener('change', function () {
+    let servicioSeleccionado = this.options[this.selectedIndex].text.toLowerCase();
+    let selectHorario = document.getElementById('hora_reserva');
+    let fechaSeleccionada = document.getElementById("fecha_reserva").value;
 
-            selectHorario.innerHTML = '<option value="">-- Seleccione una hora --</option>';
+    selectHorario.innerHTML = '<option value="">-- Seleccione una hora --</option>';
 
-            if (!servicioSeleccionado || servicioSeleccionado === "-- seleccione --") {
-                alert("⚠️ Por favor, seleccione un tipo de servicio antes de elegir un horario.");
-                return;
-            }
+    if (!servicioSeleccionado || servicioSeleccionado === "-- seleccione --") {
+        alert("⚠️ Por favor, seleccione un tipo de servicio antes de elegir un horario.");
+        return;
+    }
 
-            let horarios = [];
-            let duracionServicio = 0;
+    let horarios = [];
+    let duracionServicio = 0;
 
-            // Obtener duración del servicio
-            fetch(`/servicios/${this.value}/duracion`)
+    // Obtener duración del servicio seleccionado
+    fetch(`/servicios/${this.value}/duracion`)
+        .then(response => response.json())
+        .then(data => {
+            duracionServicio = data.duracion; // formato esperado "HH:MM"
+            let [horas, minutos] = duracionServicio.split(":").map(Number);
+            let duracionTotalMinutos = horas * 60 + minutos;
+            let intervaloHoras = duracionTotalMinutos / 60;
+
+            // Generar horarios base (mañana y tarde)
+            const agregarHorarios = (inicio, fin, intervaloHoras, duracionTotalMinutos) => {
+                const intervaloMinutos = Math.round(intervaloHoras * 60);
+                const inicioMin = Math.round(inicio * 60);
+                const finMin = Math.round(fin * 60);
+                const excesoPermitido = duracionTotalMinutos > 60 ? 30 : 0;
+
+                for (let minuto = inicioMin; minuto < finMin + excesoPermitido; minuto += intervaloMinutos) {
+                    if (minuto + duracionTotalMinutos <= finMin + excesoPermitido) {
+                        let h = Math.floor(minuto / 60).toString().padStart(2, '0');
+                        let m = (minuto % 60).toString().padStart(2, '0');
+                        horarios.push(`${h}:${m}`);
+                    }
+                }
+            };
+
+            agregarHorarios(8.5, 12, intervaloHoras, duracionTotalMinutos); // 08:30–12:00
+            agregarHorarios(15, 20, intervaloHoras, duracionTotalMinutos); // 15:00–20:00
+
+            selectHorario.innerHTML = '<option value="">Cargando horarios...</option>';
+
+            // Verificar horarios ocupados
+            fetch(`/citas-ocupadas?fecha=${fechaSeleccionada}`)
                 .then(response => response.json())
-                .then(data => {
-                    duracionServicio = data.duracion; // formato esperado "HH:MM"
-                    let [horas, minutos] = duracionServicio.split(":").map(Number);
-                    let duracionTotalMinutos = horas * 60 + minutos;
-                    let intervaloHoras = duracionTotalMinutos / 60;
+                .then(citasOcupadas => {
+                    selectHorario.innerHTML = '<option value="">-- Seleccione una hora --</option>';
 
-                    // Generar horarios según duración
-                    const agregarHorarios = (inicio, fin, intervaloHoras, duracionTotalMinutos) => {
-                        const horariosTemp = [];
-                        const intervaloMinutos = Math.round(intervaloHoras * 60);
-                        const inicioMin = Math.round(inicio * 60);
-                        const finMin = Math.round(fin * 60);
-                        const excesoPermitido = duracionTotalMinutos > 60 ? 30 : 0;
+                    let horasBloqueadas = new Set();
 
-                        for (let minuto = inicioMin; minuto < finMin + excesoPermitido; minuto +=
-                            intervaloMinutos) {
-                            if (minuto + duracionTotalMinutos <= finMin + excesoPermitido) {
-                                let h = Math.floor(minuto / 60).toString().padStart(2, '0');
-                                let m = (minuto % 60).toString().padStart(2, '0');
-                                horarios.push(`${h}:${m}`);
+                    // 🔹 Registrar TODAS las horas ocupadas por cualquier servicio
+                    citasOcupadas.forEach(cita => {
+                        let [h, m] = cita.hora_cita.split(":").map(Number);
+                        let [dh, dm] = cita.duracion.split(":").map(Number);
+
+                        let inicio = h * 60 + m;
+                        let fin = inicio + dh * 60 + dm;
+
+                        // 🔴 Bloquear todo el rango completo ocupado por esa cita
+                        for (let i = inicio; i < fin; i += 15) { // cada 15 minutos
+                            let bloqueH = Math.floor(i / 60).toString().padStart(2, '0');
+                            let bloqueM = (i % 60).toString().padStart(2, '0');
+                            horasBloqueadas.add(`${bloqueH}:${bloqueM}`);
+                        }
+                    });
+
+                    // Obtener hora actual (para evitar horas pasadas)
+                    let ahora = new Date();
+                    let fechaHoy = ahora.toISOString().split("T")[0];
+                    let minutosActuales = ahora.getHours() * 60 + ahora.getMinutes();
+
+                    horarios.forEach(hora => {
+                        let [h, m] = hora.split(":").map(Number);
+                        let inicio = h * 60 + m;
+                        let fin = inicio + duracionTotalMinutos;
+                        let hayInterseccion = false;
+
+                        // 🔹 Revisar si alguna parte de este rango choca con horasBloqueadas
+                        for (let i = inicio; i < fin; i += 15) {
+                            let bloqueH = Math.floor(i / 60).toString().padStart(2, '0');
+                            let bloqueM = (i % 60).toString().padStart(2, '0');
+                            if (horasBloqueadas.has(`${bloqueH}:${bloqueM}`)) {
+                                hayInterseccion = true;
+                                break;
                             }
                         }
-                    };
 
-                    agregarHorarios(8.5, 12, intervaloHoras, duracionTotalMinutos);
-                    agregarHorarios(15, 20, intervaloHoras, duracionTotalMinutos);
+                        let option = document.createElement("option");
+                        option.value = hora;
+                        option.textContent = hora;
 
-                    selectHorario.innerHTML = '<option value="">Cargando horarios...</option>';
+                        // Deshabilitar si ya pasó la hora de hoy
+                        if (fechaSeleccionada === fechaHoy && inicio <= minutosActuales) {
+                            option.disabled = true;
+                            option.textContent += " (Hora pasada)";
+                        }
 
-                    // Verificar horarios ocupados
-                    fetch(`/citas-ocupadas?fecha=${fechaSeleccionada}`)
-                        .then(response => response.json())
-                        .then(citasOcupadas => {
-                            selectHorario.innerHTML = '<option value="">-- Seleccione una hora --</option>';
+                        // Deshabilitar si interseca con otro servicio
+                        if (hayInterseccion) {
+                            option.disabled = true;
+                            option.textContent += " (No disponible)";
+                        }
 
-                            let horasBloqueadas = new Set();
+                        selectHorario.appendChild(option);
+                    });
 
-                            citasOcupadas.forEach(cita => {
-                                let [h, m] = cita.hora_cita.split(":").map(Number);
-                                let [dh, dm] = cita.duracion.split(":").map(Number);
-                                let inicio = h * 60 + m;
-                                let fin = inicio + dh * 60 + dm;
-
-                                for (let i = inicio; i < fin; i += 30) {
-                                    let bloqueH = Math.floor(i / 60).toString().padStart(2, '0');
-                                    let bloqueM = (i % 60).toString().padStart(2, '0');
-                                    horasBloqueadas.add(`${bloqueH}:${bloqueM}`);
-                                }
-                            });
-
-                            horarios.forEach(hora => {
-                                let [h, m] = hora.split(":").map(Number);
-                                let inicio = h * 60 + m;
-                                let fin = inicio + duracionTotalMinutos;
-                                let hayInterseccion = false;
-
-                                for (let i = inicio; i < fin; i += 30) {
-                                    let bloqueH = Math.floor(i / 60).toString().padStart(2, '0');
-                                    let bloqueM = (i % 60).toString().padStart(2, '0');
-                                    if (horasBloqueadas.has(`${bloqueH}:${bloqueM}`)) {
-                                        hayInterseccion = true;
-                                        break;
-                                    }
-                                }
-
-                                let option = document.createElement("option");
-                                option.value = hora;
-                                option.textContent = hora;
-
-                                if (hayInterseccion) {
-                                    option.disabled = true;
-                                    option.textContent += " (No disponible)";
-                                }
-
-                                selectHorario.appendChild(option);
-                            });
-                        })
-                        .catch(error => console.error("Error al obtener las citas ocupadas:", error));
+                    // Si ya no hay horas disponibles hoy, sugerir cambiar fecha
+                    if (fechaSeleccionada === fechaHoy) {
+                        let horasDisponibles = Array.from(selectHorario.options).some(opt => !opt.disabled && opt.value !== "");
+                        if (!horasDisponibles) {
+                            let aviso = document.createElement("option");
+                            aviso.disabled = true;
+                            aviso.textContent = "No hay horarios disponibles hoy. Seleccione otra fecha.";
+                            selectHorario.appendChild(aviso);
+                        }
+                    }
                 })
-                .catch(error => console.error("Error al obtener la duración del servicio:", error));
-        });
+                .catch(error => console.error("Error al obtener las citas ocupadas:", error));
+        })
+        .catch(error => console.error("Error al obtener la duración del servicio:", error));
+});
+
 
 
         document.getElementById("form_reserva").addEventListener("submit", function(event) {

@@ -124,12 +124,51 @@ class UserController extends Controller
         $user->update(["actualizacion"=>now()]);
         return redirect()->route("users.index")->with(["mensaje"=>"Usuario actualizado exitosamente"]);
     }
-    public function destroy(string $id)
+     public function destroy($id)
     {
-        //
-        $user = User::find($id);
+        $user = User::findOrFail($id);
         $user->delete();
-        return redirect()->route("users.index")->with(["mensaje"=>"Usuario eliminado exitosamente"]);
+
+        return redirect()->back()->with('success', 'Usuario eliminado correctamente.');
     }
+  
+    public function trashed()
+    {
+        $users = User::onlyTrashed()->paginate(7);
+        return view('user_elim', compact('users'));
+    }
+
+    // 🔵 Restaurar usuario eliminado
+    public function restore($id)
+    {
+        $user = User::withTrashed()->findOrFail($id);
+        $user->restore();
+
+        return redirect()->back()->with('success', 'Usuario restaurado correctamente.');
+    }
+
+    // 🔴 Eliminar permanentemente
+    public function forceDelete($id)
+    {
+        $user = User::withTrashed()->findOrFail($id);
+        $user->forceDelete();
+
+        return redirect()->back()->with('success', 'Usuario eliminado permanentemente.');
+    }
+    public function forceDeleteAll()
+{
+    $deletedUsers = User::onlyTrashed()->get();
+
+    if ($deletedUsers->isEmpty()) {
+        return redirect()->back()->with('error', 'No hay usuarios eliminados para borrar definitivamente.');
+    }
+
+    foreach ($deletedUsers as $user) {
+        $user->forceDelete();
+    }
+
+    return redirect()->back()->with('success', 'Todos los usuarios eliminados han sido borrados permanentemente.');
+}
+
 
 }

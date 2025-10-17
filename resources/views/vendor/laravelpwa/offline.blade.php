@@ -2,6 +2,6 @@
 
 @section('content')
 
-    <h1>You are currently not connected to any networks.</h1>
+    <h1>Debes conectarte a internet para continuar.</h1>
 
 @endsection

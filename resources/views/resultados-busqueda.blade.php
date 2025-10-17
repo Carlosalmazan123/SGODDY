@@ -90,6 +90,8 @@
                                 <th class="p-2">Apellido</th>
                                 <th class="p-2">Teléfono</th>
                                 <th class="p-2">Dirección</th>
+                                <th class="p-2">CI</th>
+                                <th class="p-2">Email</th>
                                 <th class="p-2 text-center">Acciones</th>
                             </tr>
                         </thead>
@@ -100,6 +102,8 @@
                                     <td class="p-2">{{ $propietario->apellido }}</td>
                                     <td class="p-2">{{ $propietario->telefono }}</td>
                                     <td class="p-2">{{ $propietario->direccion }}</td>
+                                    <td class="p-2">{{ $propietario->ci }}</td>
+                                    <td class="p-2">{{ $propietario->correo }}</td>
                                     <td class="p-2 text-center space-x-2">
                                         @can("proopietario.edit")
                                         <a href="{{ route('propietarios.edit', $propietario) }}" class="text-blue-600 hover:underline">
@@ -400,10 +404,10 @@
             <table class="w-full text-sm text-left text-gray-700 border">
                 <thead class="bg-gray-100 font-semibold">
                     <tr>
-                        <th class="p-4">Paciente</th>
+                        <th class="p-4">Usuario</th>
                         <th class="p-4">Total</th>
-                        <th class="p-4">Método de pago</th>
-                        <th class="p-4">Estado</th>
+                       
+                        <th class="p-4">Fecha</th>
                         <th class="p-4 text-center">Acciones</th>
                     </tr>
                 </thead>
@@ -411,10 +415,10 @@
                     @foreach($bloque['resultados'] as $factura)
 
                         <tr class="border-b">
-                            <td class="p-4">{{ $factura->paciente->nombre }}</td>
+                            <td class="p-4">{{ $factura->user->name }}</td>
                             <td class="p-4">Bs {{ number_format($factura->total, 2) }}</td>
-                            <td class="p-4">{{ $factura->metodo_pago }}</td>
-                            <td class="p-4">{{ $factura->estado }}</td>
+                            <td class="p-4">{{ \Carbon\Carbon::parse($factura->fecha)->format('d/m/Y') }}</td>
+                          
                             <td class="p-4 text-center space-x-2">
                                 @can("factura.edit")
                                 <a href="{{ route('facturas.edit', $factura) }}" class="text-blue-600 hover:underline">

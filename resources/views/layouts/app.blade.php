@@ -58,7 +58,7 @@
                         <nav class="flex flex-col gap-1 min-w-[240px] p-2 font-sans text-base font-normal dark:text-white">
                               
                             @can("paciente.index")
-                            <a href="{{ route('pacientes.index') }}" class="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
+                            <a href="{{ route('pacientes.index') }}" class="flex items-center w-full p-2 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
                                 <div class="grid place-items-center mr-4">
                                     <ion-icon name="paw-outline" class="h-5 w-5  dark:text-white"></ion-icon>
                                 </div>
@@ -66,7 +66,7 @@
                             </a>
                             @endcan
                             @can("propietario.index")
-                            <a href="{{ route('propietarios.index') }}" class="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
+                            <a href="{{ route('propietarios.index') }}" class="flex items-center w-full p-2 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
                                 <div class="grid place-items-center mr-4">
                                     <ion-icon name="man-outline" class="h-5 w-5 dark:text-white"></ion-icon>
                                 </div>
@@ -74,7 +74,7 @@
                             </a>
                             @endcan
                             @can("cita.index")
-                            <a href="{{ route('citas.index') }}" class="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
+                            <a href="{{ route('citas.index') }}" class="flex items-center w-full p-2 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
                                 <div class="grid place-items-center mr-4">
                                     <ion-icon name="calendar-outline" class="h-5 w-5 dark:text-white"></ion-icon>
                                 </div>
@@ -82,7 +82,7 @@
                             </a>
                             @endcan
                             @can("ticket.inicio")
-                            <a href="{{ route('tickets.inicio') }}" class="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
+                            <a href="{{ route('tickets.inicio') }}" class="flex items-center w-full p-2 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
                                 <div class="grid place-items-center mr-4">
                                     <ion-icon name="ticket-outline" class="h-5 w-5 dark:text-white"></ion-icon>
                                 </div>
@@ -90,7 +90,7 @@
                             </a>
                             @endcan
                             @can("categoria.index")
-                            <a href="{{ route('categorias.index') }}" class="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
+                            <a href="{{ route('categorias.index') }}" class="flex items-center w-full p-2 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
                                 <div class="grid place-items-center mr-4">
                                     <ion-icon name="pricetag-outline" class="h-5 w-5 dark:text-white"></ion-icon>
                                 </div>
@@ -98,7 +98,7 @@
                             </a>   
                             @endcan
                             @can("producto.index")
-                            <a href="{{ route('productos.index') }}" class="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
+                            <a href="{{ route('productos.index') }}" class="flex items-center w-full p-2 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
                                 <div class="grid place-items-center mr-4">
                                     <ion-icon name="bag-handle-outline" class="h-5 w-5 dark:text-white"></ion-icon>
                                 </div>
@@ -106,7 +106,7 @@
                             </a>
                             @endcan
                             @can("proveedor.index")
-                            <a href="{{ route('proveedores.index') }}" class="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
+                            <a href="{{ route('proveedores.index') }}" class="flex items-center w-full p-2 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
                                 <div class="grid place-items-center mr-4">
                                     <ion-icon name="storefront-outline" class="h-5 w-5 dark:text-white"></ion-icon>
                                 </div>
@@ -114,7 +114,7 @@
                             </a>
                             @endcan
                             @can("factura.index")
-                            <a href="{{ route('facturas.index') }}" class="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
+                            <a href="{{ route('facturas.index') }}" class="flex items-center w-full p-2 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
                                 <div class="grid place-items-center mr-4">
                                     <ion-icon name="receipt-outline" class="h-5 w-5 dark:text-white"></ion-icon>
                                 </div>
@@ -122,7 +122,7 @@
                             </a>
                             @endcan
                             @can("inventario.index")
-                            <a href="{{ route('inventario.index') }}" class="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
+                            <a href="{{ route('inventario.index') }}" class="flex items-center w-full p-2 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
                                 <div class="grid place-items-center mr-4">
                                     <ion-icon name="clipboard-outline" class="h-5 w-5 dark:text-white"></ion-icon>
                                
@@ -131,7 +131,7 @@
                             </a>
                             @endcan
                             @can("servicio.index")
-                            <a href="{{ route('servicios.index') }}" class="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
+                            <a href="{{ route('servicios.index') }}" class="flex items-center w-full p-2 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
                                 <div class="grid place-items-center mr-4">
                                     <ion-icon name="construct-outline" class="h-5 w-5 dark:text-white"></ion-icon>
                                
@@ -140,7 +140,7 @@
                             </a>
                             @endcan
                             @can("user.index")
-                            <a href="{{ route('users.index') }}" class="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
+                            <a href="{{ route('users.index') }}" class="flex items-center w-full p-2 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
                                 <div class="grid place-items-center mr-4">
                                     <ion-icon name="people-outline" class="h-5 w-5 dark:text-white"></ion-icon>
                                
@@ -149,13 +149,20 @@
                             </a>
                             @endcan
                             @can("role.index")
-                            <a href="{{ route('roles.index') }}" class="flex items-center w-full p-3 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
+                            <a href="{{ route('roles.index') }}" class="flex items-center w-full p-2 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
                                 <div class="grid place-items-center mr-4">
                                     <ion-icon name="cog-outline" class="h-5 w-5 dark:text-white"></ion-icon>
                                 </div>
                                 Roles
                             </a>
                             @endcan
+                           <a href="{{ route('eliminado.index') }}" class="flex items-center w-full p-2 rounded-lg text-start leading-tight transition-all hover:bg-blue-50 hover:bg-opacity-80 focus:bg-blue-50 focus:bg-opacity-80 active:bg-gray-50 active:bg-opacity-80 hover:text-blue-900 focus:text-blue-900 active:text-blue-900 outline-none">
+    <div class="grid place-items-center mr-4">
+        <ion-icon name="trash-outline" class="h-5 w-5 dark:text-white"></ion-icon>
+    </div>
+    Eliminados
+</a>
+
                         </nav>
                         
                 </div>

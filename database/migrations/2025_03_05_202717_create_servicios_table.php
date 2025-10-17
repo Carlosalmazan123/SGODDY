@@ -19,6 +19,7 @@ return new class extends Migration
             $table->time('duracion');
             $table->timestamps();
             $table->boolean('activo')->default(true);
+            $table->softDeletes();
         });
     }
 

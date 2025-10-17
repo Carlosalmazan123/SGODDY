@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('color');
             $table->foreignId('user_id')->nullable()->constrained('users')->onDelete('cascade');
             $table->foreignId('servicio_id')->constrained('servicios')->onDelete('cascade'); // Nueva relación
+            $table->softDeletes();
             $table->timestamps();
         });
         

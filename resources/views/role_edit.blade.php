@@ -1,14 +1,14 @@
 <x-app-layout> 
 @section("content")
 @if($errors->any())
-<div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-    <ul>
-        @foreach ($errors->all() as $error)
-            <li class="list-disc">{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
+                        <div class="bg-red-100 dark:bg-red-700 border border-red-700 dark:border-red-700 text-white dark:text-white px-4 py-3 rounded relative mb-4" role="alert">
+                            <ul class="list-disc pl-5">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
 <div class="container mx-auto md:max-w-md pt-4">
     <div class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
         <div class="mb-4">

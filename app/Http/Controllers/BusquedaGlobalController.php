@@ -21,7 +21,7 @@ class BusquedaGlobalController extends Controller
         $query = $request->input('busqueda');
         $bloques = [];
 
-        $pacientes = Paciente::with(['paciente', 'propietario'])
+        $pacientes = Paciente::with([ 'propietario'])
         ->where('nombre', 'like', "%$query%")
         ->orWhere('especie', 'like', "%$query%")
         ->orWhere('raza', 'like', "%$query%")
@@ -45,6 +45,9 @@ class BusquedaGlobalController extends Controller
             ->orWhere('apellido', 'like', "%$query%")
             ->orWhere('telefono', 'like', "%$query%")
             ->orWhere('direccion', 'like', "%$query%")
+            ->orWhere('correo', 'like', "%$query%")
+            ->orWhere('ci', 'like', "%$query%")
+
             ->limit(5)
             ->get();
         if ($propietarios->isNotEmpty()) {
@@ -60,9 +63,10 @@ class BusquedaGlobalController extends Controller
         }
         $productos = Producto::where('nombre', 'like', "%$query%")
                                 ->orWhere('precio', 'like', "%$query%")
-                               
-                                ->orWhere('descripcion', 'like', "%$query%")
+                                ->orWhere('precio_compra', 'like', "%$query%")
                                 ->orWhere('fecha_vencimiento', 'like', "%$query%")
+                                
+                                ->orWhere('unidad', 'like', "%$query%")
                                 ->orWhere('categoria_id', 'like', "%$query%")   
                                 
                                 ->limit(5) 
@@ -154,12 +158,12 @@ class BusquedaGlobalController extends Controller
             $bloques[] = ['nombre' => 'Inventarios', 'resultados' => $inventarios];
         }
         // Buscamos en la tabla de facturas
-        $facturas = Factura::with(['paciente'])
+        $facturas = Factura::with(['user'])
     
         ->Where('total', 'like', "%$query%")
 
-        ->orWhereHas('paciente', function ($q) use ($query) {
-            $q->where('nombre', 'like', "%$query%");
+        ->orWhereHas('user', function ($q) use ($query) {
+            $q->where('name', 'like', "%$query%");
         })
         ->limit(5)
         ->get();

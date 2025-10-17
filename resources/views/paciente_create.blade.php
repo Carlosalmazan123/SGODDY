@@ -1,13 +1,15 @@
 <x-app-layout>
+    <div class="container mx-auto p-4">
     @if($errors->any())
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative w-full max-w-3xl mx-auto" role="alert">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li class="list-disc">{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
+                        <div class="bg-red-100 dark:bg-red-700 border border-red-700 dark:border-red-700 text-white dark:text-white px-4 py-3 rounded relative mb-4" role="alert">
+                            <ul class="list-disc pl-5">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+    
     <div id="mainContainer" class="w-full max-w-3xl mx-auto p-4 bg-white rounded-lg shadow mt-4 flex flex-col items-center transition-all duration-300">
 
         <h2 class="text-2xl font-bold mb-4">Registrar Nuevo Paciente</h2>
@@ -17,12 +19,12 @@
             
             <div class="flex space-x-4">
                 <div class="w-1/2">
-                    <label class="block font-medium">Nombre del Paciente</label>
+                    <label class="block font-medium">Nombre del Paciente<b class="text-red-600">*</b></label>
                     <input type="text" name="nombre" class="w-full border-gray-300 rounded-md" required>
                 </div>
                 
                 <div class="w-1/2">
-                    <label class="block font-medium">Especie</label>
+                    <label class="block font-medium">Especie<b class="text-red-600">*</b></label>
                     <div id="especie-container">
                         <select name="especie" id="especie-select" class="w-full border-gray-300 rounded-md" required>
                             <option value="">Selecciona una especie</option>
@@ -31,7 +33,7 @@
                             <option value="Conejo">Caballo</option>
                             <option value="Hamster">Conejo</option>
                             <option value="Ave">Chivo</option>
-                            <option value="Tortuga">Tortuga</option>
+                           
                             <option value="Oveja">Oveja</option>
                             <option value="Otro">Otro</option>
                         </select>
@@ -42,7 +44,7 @@
             
             <div class="flex space-x-4 ">
                 <div class="w-1/2">
-                    <label class="block font-medium">Raza</label>
+                    <label class="block font-medium">Raza<b class="text-red-600">*</b></label>
                     <div id="raza-container">
                       <select name="raza" id="raza-select" class="w-full border-gray-300 rounded-md">
                         <option value="">Selecciona una raza</option>
@@ -50,7 +52,7 @@
                     </div>
                   </div>                  
                 <div class="w-1/2">
-                    <label class="block font-medium">Año de Nacimiento</label>
+                    <label class="block font-medium">Año de Nacimiento<b class="text-red-600">*</b></label>
                     <select id="anio" name="anio" class="w-full border-gray-300 rounded-md" required>
                        
                     </select>
@@ -59,22 +61,22 @@
             
             <div class="flex space-x-4">
                 <div class="w-1/2">
-                    <label class="block font-medium">Edad (años)</label>
+                    <label class="block font-medium">Edad(años)<b class="text-red-600">*</b></label>
                     <input type="number" id="edad" name="edad" class="w-full border-gray-300 rounded-md bg-gray-200" readonly>
                 </div>
                 <div class="w-1/2">
-                    <label for="color" class="block font-medium">Color</label>
+                    <label for="color" class="block font-medium">Color<b class="text-red-600">*</b></label>
                     <input type="text" name="color" class="w-full border-gray-300 rounded-md" required>
                 </div>
             </div>
             
             <div class="flex space-x-4">
                 <div class="w-1/2">
-                    <label for="peso" class="block font-medium">Peso en kg</label>
+                    <label for="peso" class="block font-medium">Peso en kg<b class="text-red-600">*</b></label>
                     <input type="number" name="peso" id="precio"  step="0.01"  class="w-full border-gray-300 rounded-md" required>              
                 </div>
                 <div class="w-1/2">
-                    <label class="block font-medium">Sexo</label>
+                    <label class="block font-medium">Sexo<b class="text-red-600">*</b></label>
                     <select name="sexo" class="w-full border-gray-300 rounded-md">
                         <option value="Macho">Macho</option>
                         <option value="Hembra">Hembra</option>
@@ -107,39 +109,47 @@
             </div>
             
             <div id="nuevoPropietarioForm" class="hidden p-4 rounded mt-4 w-full">
-    <h3 class="text-xl font-semibold mb-2">Registrar Nuevo Propietario</h3>
+    <h3 class="text-xl font-semibold mb-2">Registrar Nuevo Propietario<b class="text-red-600">*</b></h3>
     <div class="flex space-x-4">
         <div class="w-1/2">
-            <label class="block font-medium">Nombre del Propietario</label>
-            <input type="text" name="nuevo_nombre" id="nuevo_nombre" class="w-full border-gray-300 rounded-md">
+            <label class="block font-medium">Nombre del Propietario<b class="text-red-600">*</b></label>
+            <input type="text" name="nuevo_nombre" id="nuevo_nombre" class="w-full border-gray-300 rounded-md" placeholder="Ej: Pedro">
         </div>
         <div class="w-1/2">
-            <label class="block font-medium">Apellido del Propietario</label>
-            <input type="text" name="nuevo_apellido" id="nuevo_apellido" class="w-full border-gray-300 rounded-md">
+            <label class="block font-medium">Apellido del Propietario<b class="text-red-600">*</b></label>
+            <input type="text" name="nuevo_apellido" id="nuevo_apellido" class="w-full border-gray-300 rounded-md" placeholder="Ej: Pérez">
         </div>
     </div>
     <div class="flex space-x-4 mt-4">
         <div class="w-1/2">
-            <label class="block font-medium">Teléfono</label>
-            <input type="text" name="nuevo_telefono" id="nuevo_telefono" class="w-full border-gray-300 rounded-md">
+            <label class="block font-medium">Teléfono<b class="text-red-600">*</b></label>
+            <input type="number" name="nuevo_telefono" id="nuevo_telefono" class="w-full border-gray-300 rounded-md" value="591">
         </div>
+        <div class="w-1/2">
+            <label class="block font-medium">CI<b class="text-red-600">*</b></label>
+            <input type="text" name="nuevo_ci" id="nuevo_ci" class="w-full border-gray-300 rounded-md" placeholder="Ej: 12345678">
+        </div>
+    </div>
+    <div class="flex space-x-4 mt-4">
         <div class="w-1/2">
             <label class="block font-medium">Dirección</label>
-            <input type="text" name="nuevo_direccion" class="w-full border-gray-300 rounded-md">
+            <input type="text" name="nuevo_direccion" class="w-full border-gray-300 rounded-md" placeholder="Opcional">
         </div>
         <div class="w-1/2">
-            <label class="block font-medium">Correo electrónico</label>
-            <input type="text" name="nuevo_correo" class="w-full border-gray-300 rounded-md">
+            <label class="block font-medium">Correo electrónico<b class="text-red-600">*</b></label>
+            <input type="text" name="nuevo_correo" class="w-full border-gray-300 rounded-md" placeholder="Ej:pedro@gmail.com">
         </div>
     </div>
 
-    <!-- Checkbox de consentimiento -->
+    <!-- Checkbox de consentimiento
+  
     <div class="mt-4">
         <label class="inline-flex items-center">
             <input type="checkbox" name="opt_in_whatsapp" id="opt_in_whatsapp" class="form-checkbox h-5 w-5 text-green-600" value="1">
             <span class="ml-2 text-gray-700">Acepto recibir mensajes de recordatorios y notificaciones por WhatsApp.</span>
         </label>
     </div>
+      -->
 </div>
 
             
@@ -148,6 +158,7 @@
                 <button type="submit" class="ml-2 px-4 py-2 bg-blue-500 text-white rounded">Guardar</button>
             </div>
         </form>
+    </div>
     </div>
     <script>
     
@@ -186,7 +197,7 @@ function renderEspecieSelect() {
             <option value="Caballo">Caballo</option>
             <option value="Conejo">Conejo</option>
             <option value="Chivo">Chivo</option>
-            <option value="Tortuga">Tortuga</option>
+      
             <option value="Oveja">Oveja</option>
             <option value="Otro">Otro</option>
         </select>
@@ -219,12 +230,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 let currentEspecie = '';
 const razasPorEspecie = {
-    Perro: ['Labrador', 'Pastor Alemán', 'Pug', 'Bulldog', 'Chihuahua','Otra raza'],    
-    Gato: ['Persa', 'Siamés', 'Maine Coon', 'Bengalí', 'Sphynx','Otra raza'],
-    Caballo: ['Árabe', 'Andaluz', 'Percherón', 'Frisón','Otra raza'],
+    Perro: ['Labrador', 'Pastor Alemán', 'Pug', 'Bulldog', 'Mestizo','Otra raza'],    
+    Gato: ['Persa', 'Siamés', 'Maine Coon', 'Bengalí', 'Mestizo','Otra raza'],
+    Caballo: ['Árabe', 'Andaluz', 'Percherón', 'Frisón', 'Mestizo','Otra raza'],
     Conejo: ['Enano', 'Cabeza de león', 'Belier', 'Rex','Otra raza'],
     Chivo: ['Boer', 'Nubian', 'Saanen','Otra raza'],
-    Tortuga: ['Terrestre', 'Acuática'],
+    
     Oveja: ['Merina', 'Suffolk', 'Dorper','Otra raza'],
     Otro: ['Otra raza']
 };

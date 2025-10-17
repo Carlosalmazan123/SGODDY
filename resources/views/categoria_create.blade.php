@@ -2,11 +2,19 @@
 
 <div class="container mx-auto p-6 bg-white shadow-md rounded-lg">
     <h1 class="text-2xl font-bold mb-4">Crear Nueva Categoría</h1>
-
+@if($errors->any())
+                        <div class="bg-red-100 dark:bg-red-700 border border-red-700 dark:border-red-700 text-white dark:text-white px-4 py-3 rounded relative mb-4" role="alert">
+                            <ul class="list-disc pl-5">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
     <form action="{{ route('categorias.store') }}" method="POST">
         @csrf
         <div class="mb-4">
-            <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
+            <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre*</label>
             <input type="text" name="nombre" id="nombre" class="mt-1 p-2 w-full border border-gray-300 rounded-md" value="{{ old('nombre') }}" required>
             @error('nombre') <span class="text-red-500 text-xs">{{ $message }}</span> @enderror
         </div>

@@ -22,13 +22,13 @@
         <h1 class="text-2xl font-bold mb-4">ROLES</h1>
     <div class="flex flex-col text-center">
         <div class="overflow-x-auto sm:mx-0.5 lg:mx-0.5  ">
-          <div class="py-2 inline-block min-w-full sm:px-6 lg:px-8 ">
-            <div class="overflow-hidden">
-              <table class="min-w-full  ">
-                <thead class="bg-gray-400  ">
+          <div class="bg-white mt-3 shadow-md rounded-lg overflow-hidden border border-gray-200">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm text-gray-700">
+                        <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
                             <tr>
-                                <th  class="border border-gray-500 px-4 py-2 text-black">Nombre</th>
-                                <th  class="border border-gray-500 px-4 py-2 text-black">
+                                <th  class=" border px-4 py-2 text-black">Nombre</th>
+                                <th  class=" border px-4 py-2 text-black">
                                     <a href="{{ route("roles.create") }}" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Crear</a>
                                 </th>
                             </tr>
@@ -36,14 +36,14 @@
                         <tbody class="bg-white">
                             @foreach($roles as $role)
                                 <tr>
-                                    <td  class="border border-gray-500 px-4 py-2 text-start text-black ">{{ $role->name }}</td>
-                                    <td  class="border border-gray-500 px-4 py-2 text-center">
+                                    <td  class=" border px-4 py-2 text-start text-black ">{{ $role->name }}</td>
+                                    <td  class=" border px-4 py-2 text-center">
                                         <div class="btn-group">
                                             <a href="{{ route("roles.permissions.edit", [$role]) }}" class="text-green-600 hover:text-green-700 font-bold py-2  rounded" title="Permisos"><ion-icon name="shield-checkmark-outline" class="h-6 w-6"></ion-icon>
                                             </a>
                                             <a href="{{ route("roles.edit", [$role]) }}" class="text-blue-500 hover:text-orange-600 font-bold py-2 rounded" title="Editar"><ion-icon name="create-outline" class="h-6 w-6"></ion-icon>
                                             </a>
-                                            <button type="button" class="text-red-500 hover:text-red-700  font-bold py-1.5 rounded"  onclick="toggleModal('deleteModal{{$role->id}}')" title ="Eliminar">
+                                            <button type="button" class="text-red-500 hover:text-red-700  font-bold py-1.5 rounded"  onclick="return confirm('¿Estás seguro de que deseas eliminar este rol?');" title ="Eliminar">
                                                 <ion-icon name="trash-outline" class="h-6 w-6"></ion-icon>
 
                                             </button>
@@ -88,6 +88,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                </div></div>
                     {{ $roles->links() }}
                 </div>
             </div>

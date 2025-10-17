@@ -13,12 +13,12 @@ return new class extends Migration
     {
    Schema::create('facturas', function (Blueprint $table) {
     $table->id();
-    $table->unsignedBigInteger('paciente_id');
+    
     $table->date('fecha')->default(now());
     $table->decimal('total', 10, 2);
+    $table->softDeletes();
     $table->timestamps();
 
-    $table->foreign('paciente_id')->references('id')->on('pacientes')->onDelete('cascade');
 });
     }
 

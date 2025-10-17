@@ -62,27 +62,35 @@
                         Crear Historial Clínico
                     </a>
                 </div>
+                <div class="flex justify-center p-2">
+                 <button onclick="toggleModal()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">Cerrar</button>
+                </div>
             @endif
         </div>        
 
-        <div class="flex justify-center mt-4 space-x-4">
-            <button onclick="toggleModal()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">Cerrar</button>
-            
-            @if ($paciente->historial->isNotEmpty())
-                <a href="{{ route('historial.edit', [$paciente->id, $paciente->historial->last()->id]) }}" 
-                   class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition">
-                   Editar Historial
-                </a>
-                <a href="{{ route('historial.reporte', [$paciente->id, $paciente->historial->last()->id]) }}" 
-                    class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded transition"
-                    target="_blank">
-                     Generar Reporte
-                 </a>
-                 
-                <!-- Botón de impresión -->
-               
+        <div class="flex justify-center mt-4 space-x-6">
 
-            @endif
+            
+           @if ($paciente->historial->isNotEmpty())
+   
+
+    <!-- Ver todos los historiales -->
+    <a href="{{ route('historial.index', $paciente->id) }}"
+       class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded transition">
+        Ver Todos los Historiales
+    </a>
+
+    <!-- Editar último historial -->
+    <a href="{{ route('historial.edit', [$paciente->id, $paciente->historial->last()->id]) }}" 
+       class="px-4 py-2 bg-yellow-500 hover:bg-yellow-600 text-white rounded transition">
+       Editar Historial
+    </a>
+
+    <!-- Generar reporte PDF -->
+    
+                 <button onclick="toggleModal()" class="px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded">Cerrar</button>
+@endif
+
         </div>
     </div>
 </div>

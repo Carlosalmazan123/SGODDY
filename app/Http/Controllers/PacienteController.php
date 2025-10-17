@@ -34,8 +34,8 @@ class PacienteController extends Controller
         $request->validate([
             'nombre' => 'required|string',
             'especie' => 'required|string',
-            'raza' => 'nullable|string',
-            'anio' => 'nullable|string',
+            'raza' => 'required|string',
+            'anio' => 'required|string',
             'edad' => 'required|integer|min:0',
             'sexo' => 'required|string',
             'color' => 'required|string',
@@ -46,7 +46,7 @@ class PacienteController extends Controller
             'nuevo_apellido' => 'nullable|string|required_if:propietario_id,null',
             'nuevo_telefono' => 'nullable|string|required_if:propietario_id,null|unique:propietarios,telefono',
             'nuevo_direccion' => 'nullable|string',
-            'nuevo_correo' => 'nullable|string',
+            'nuevo_correo' => 'nullable|string|required_if:propietario_id,null',
             
         ]);
     
@@ -59,7 +59,7 @@ class PacienteController extends Controller
                 'direccion' => $request->nuevo_direccion,
                 'correo' => $request->nuevo_correo,
                 'opt_in_whatsapp' => $request->has('opt_in_whatsapp') ? true : false,
-                'user_id' => $request->user_id, // Si se está asignando un
+                
             ]);
             $propietario_id = $propietario->id;
         } else {
@@ -182,7 +182,45 @@ public function destroy(Paciente $paciente) {
     // Eliminar el paciente de la base de datos
     $paciente->delete();
 
-    return redirect()->route('pacientes.index')->with('success', 'Paciente eliminado exitosamente.');
+    return redirect()->back()->with('success', 'Paciente eliminado exitosamente.');
+}
+public function deleted(){
+    $deletedPacientes = Paciente::onlyTrashed()->paginate(6);
+    return view('paciente_elim', compact('deletedPacientes'));
+}
+public function restore($id){
+    $paciente = Paciente::withTrashed()->findOrFail($id);
+    if ($paciente->trashed()) {
+        $paciente->restore();
+        return redirect()->back()->with('success', 'Paciente restaurado correctamente.');
+    }
+    return redirect()->back()->with('info', 'El paciente no está eliminado.');    
+}
+public function forceDelete($id){
+    $paciente = Paciente::withTrashed()->findOrFail($id);
+    if ($paciente->trashed()) {
+        // Eliminar la imagen del almacenamiento si existe
+        if ($paciente->imagen) {
+            Storage::disk('public')->delete($paciente->imagen);
+        }
+        $paciente->forceDelete();
+        return redirect()->route('pacientes.deleted')->with('success', 'Paciente eliminado permanentemente.');
+    }
+    return redirect()->back()->with('info', 'El paciente no está eliminado.');      
+}
+public function forceDeleteAll()
+{
+    $deletedPacientes = Paciente::onlyTrashed()->get();
+
+    foreach ($deletedPacientes as $paciente) {
+        // Eliminar la imagen del almacenamiento si existe
+        if ($paciente->imagen) {
+            Storage::disk('public')->delete($paciente->imagen);
+        }
+        $paciente->forceDelete();
+    }
+
+    return redirect()->route('pacientes.deleted')->with('success', 'Todos los pacientes eliminados permanentemente.');  
 }
 
 }

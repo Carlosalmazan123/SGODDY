@@ -14,11 +14,13 @@ class DashboardController extends Controller
 {
     $hoy = Carbon::today();
 
-    $citasHoy = Cita::whereDate('fecha_cita', $hoy)->count();
+    $citasHoy = Cita::whereDate('fecha_cita', $hoy)
+    ->where('visible',true)->count();
 $ticketsHoy = TicketVirtual::whereDate('fecha_cita', $hoy)
     ->whereHas('user', function($query) {
         $query->role('cliente'); // Filtra solo usuarios con rol 'cliente'
     })
+    ->where('visible', true)
     ->count();
 
 

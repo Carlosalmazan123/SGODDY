@@ -21,7 +21,15 @@ class AppServiceProvider extends ServiceProvider
             $this->app['request']->server->set('HTTPS', true);
     }
             */
-        
+           $this->app->bind(
+        \App\Repositories\ProductRepositoryInterface::class,
+        \App\Repositories\EloquentProductRepository::class
+    );
+
+    $this->app->bind(
+        \App\Services\ProductServiceInterface::class,
+        \App\Services\ProductService::class
+    );
     }
 
     /**

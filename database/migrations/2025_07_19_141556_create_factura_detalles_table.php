@@ -14,13 +14,17 @@ return new class extends Migration
        Schema::create('factura_detalles', function (Blueprint $table) {
     $table->id();
     $table->unsignedBigInteger('factura_id');
-    $table->unsignedBigInteger('producto_id');
-    $table->integer('cantidad');
+
+   
+    $table->decimal('cantidad', 10, 2); // Cambiado a decimal para permitir cantidades fraccionarias
+    $table->decimal('precio', 10, 2);
     $table->decimal('subtotal', 10, 2);
     $table->timestamps();
 
     $table->foreign('factura_id')->references('id')->on('facturas')->onDelete('cascade');
-    $table->foreign('producto_id')->references('id')->on('productos')->onDelete('cascade');
+    $table->foreignId('producto_id')->nullable()->constrained('productos')->onDelete('cascade');
+    $table->foreignId('servicio_id')->nullable()->constrained('servicios')->onDelete('cascade');
+    
 });
     }
 

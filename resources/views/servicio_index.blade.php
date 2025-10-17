@@ -19,9 +19,10 @@
         </script>
     @endif
 
-    <div  class="overflow-x-auto overflow-hidden ">
-        <table class="w-full mt-4 border-collapse border bg-gray-300  ">
-                <thead class="bg-gray-200">
+    <div class="bg-white mt-3 shadow-md rounded-lg overflow-hidden border border-gray-200">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm text-gray-700">
+                        <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
                     <tr>
                         <th class="border border-gray-300 px-4 py-2">Nombre</th>
                         <th class="border border-gray-300 px-4 py-2">Descripción</th>
@@ -48,13 +49,15 @@
                                 <form action="{{ route('servicios.destroy', $servicio->id) }}" method="POST" class="inline">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-500 hover:text-red-600 py-1 rounded-md"><ion-icon name="trash-outline" class="h-6 w-6"></ion-icon></button>
+                                    <button type="submit"
+                                    onclick="return confirm('¿Estás seguro que deseas eliminar este servicio?')" class="text-red-500 hover:text-red-600 py-1 rounded-md"><ion-icon name="trash-outline" class="h-6 w-6"></ion-icon></button>
                                 </form>
                             </td>
                         </tr>
                     @endforeach
                 </tbody>
             </table>
+                </div></div>
             <div class="mt-4">
                 {{ $servicios->links() }}
             </div>

@@ -49,7 +49,7 @@
                         <button id="darkmode">🌙</button>
                     </li>
                     <li class="text-blue-600 font-semibold"><a href="{{ url('/') }}">Inicio</a></li>
-                    <li><a href="#">La Clínica</a></li>
+                    <li><a href="{{ url('/clinica') }}">La Clínica</a></li>
 
                     <li><a href="#">Planes de Salud</a></li>
                     <li class="flex items-center space-x-4">
@@ -113,8 +113,8 @@
                             <button id="darkmode1">🌙</button>
                         </li>
                         <li class="text-blue-600 font-semibold"><a href="{{ url('/') }}">Inicio</a></li>
-                        <li><a href="#">La Clínica</a></li>
-                        <li><a href="#">Nuestros Centros</a></li>
+                        <li><a href="{{ url('/clinica') }}">La Clínica</a></li>
+             
                         <li><a href="#">Planes de Salud</a></li>
                         @if (Route::has('login'))
                             @auth
@@ -210,7 +210,8 @@
 <section class="map mt-10">
     <div class="container mx-auto rounded-xl px-4">
         <h1 class="text-center text-3xl md:text-4xl font-bold mb-6">Nuestra ubicación</h1>
-        <iframe src="https://www.google.com/maps/embed?pb=!1m14!1m12!1m3!1d232.09493218510963!2d-65.71682141584255!3d-21.448146546448605!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!5e0!3m2!1ses!2sbo!4v1741759036263!5m2!1ses!2sbo"
+
+        <iframe src="https://www.google.com/maps/embed?pb=!1m17!1m12!1m3!1d3713.5192089670236!2d-65.716769!3d-21.448134999999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m2!1m1!2zMjHCsDI2JzUzLjMiUyA2NcKwNDMnMDAuNCJX!5e0!3m2!1ses-419!2sbo!4v1760100480570!5m2!1ses-419!2sbo"
                 width="100%" height="450" class="rounded-xl w-full"
                 allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
     </div>
@@ -235,7 +236,12 @@
         </div>
     </div>
     </div>
-   
+   <footer class="bg-gray-100 dark:bg-gray-900 text-gray-600 dark:text-gray-400 py-6 mt-10">
+        <div class="max-w-6xl mx-auto px-6 lg:px-8 text-center">
+            <p class="text-sm">&copy; 2025 Clínica Veterinaria ODY. Todos los derechos reservados.</p>
+            <p class="text-sm mt-2">Dirección: Calle Beni Casi frente al hospital Eduardo Eguía, Tupiza, Bolivia | Teléfono: +591 65468983</p>
+        </div>
+    </footer>
 
 <script>
   

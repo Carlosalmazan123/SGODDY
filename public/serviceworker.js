@@ -1,52 +1,76 @@
-var staticCacheName = "pwa-v" + new Date().getTime();
-var filesToCache = [
-    '/offline',
-    '/css/app.css',
-    '/js/app.js',
-    '/images/icons/icon-72x72.png',
-    '/images/icons/icon-96x96.png',
-    '/images/icons/icon-128x128.png',
-    '/images/icons/icon-144x144.png',
-    '/images/icons/icon-152x152.png',
-    '/images/icons/icon-192x192.png',
-    '/images/icons/icon-384x384.png',
-    '/images/icons/icon-512x512.png',
+// Nombre del caché (cambia la versión si haces grandes modificaciones)
+const CACHE_NAME = "pwa-cache-v1";
+
+// Archivos mínimos necesarios para el modo offline
+const OFFLINE_URL = "/offline";
+const FILES_TO_CACHE = [
+    OFFLINE_URL,
+    "/images/icons/icon-72x72.png",
+    "/images/icons/icon-96x96.png",
+    "/images/icons/icon-128x128.png",
+    "/images/icons/icon-144x144.png",
+    "/images/icons/icon-152x152.png",
+    "/images/icons/icon-192x192.png",
+    "/images/icons/icon-384x384.png",
+    "/images/icons/icon-512x512.png",
 ];
 
-// Cache on install
+// Instalar Service Worker → cachea solo lo esencial
 self.addEventListener("install", event => {
-    this.skipWaiting();
+    self.skipWaiting();
     event.waitUntil(
-        caches.open(staticCacheName)
-            .then(cache => {
-                return cache.addAll(filesToCache);
-            })
-    )
-});
-
-// Clear cache on activate
-self.addEventListener('activate', event => {
-    event.waitUntil(
-        caches.keys().then(cacheNames => {
-            return Promise.all(
-                cacheNames
-                    .filter(cacheName => (cacheName.startsWith("pwa-")))
-                    .filter(cacheName => (cacheName !== staticCacheName))
-                    .map(cacheName => caches.delete(cacheName))
-            );
-        })
+        caches.open(CACHE_NAME).then(cache => cache.addAll(FILES_TO_CACHE))
     );
 });
 
-// Serve from Cache
+// Activar → elimina versiones viejas del caché
+self.addEventListener("activate", event => {
+    event.waitUntil(
+        caches.keys().then(keys => 
+            Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))
+        )
+    );
+    self.clients.claim();
+});
+
+// Estrategia: NETWORK FIRST → usa caché solo si no hay red
 self.addEventListener("fetch", event => {
+    // Solo manejar solicitudes GET
+    if (event.request.method !== "GET") return;
+
+    const url = new URL(event.request.url);
+
+    // ❌ EXCLUSIONES:
+    // No cachear nada que empiece con /admin o /api
+    if (
+        url.pathname.startsWith("/admin") ||
+        url.pathname.startsWith("/api")
+    ) {
+        return; // Deja que Laravel maneje normalmente esas rutas
+    }
+
+    // Intentar obtener del servidor primero
     event.respondWith(
-        caches.match(event.request)
+        fetch(event.request)
             .then(response => {
-                return response || fetch(event.request);
+                // Guardar archivos estáticos en caché (no rutas dinámicas)
+                if (
+                    response &&
+                    response.status === 200 &&
+                    (url.pathname.includes("/css/") ||
+                     url.pathname.includes("/js/") ||
+                     url.pathname.includes("/images/"))
+                ) {
+                    const cloned = response.clone();
+                    caches.open(CACHE_NAME).then(cache => cache.put(event.request, cloned));
+                }
+                return response;
             })
             .catch(() => {
-                return caches.match('offline');
+                // Si no hay conexión, usar caché o mostrar página offline
+                return caches.match(event.request).then(cached => {
+                    return cached || caches.match(OFFLINE_URL);
+                });
             })
-    )
+    );
 });

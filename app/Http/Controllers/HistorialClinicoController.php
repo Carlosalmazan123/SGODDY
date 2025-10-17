@@ -15,6 +15,16 @@ class HistorialClinicoController extends Controller
         $this->middleware("can:historial.edit")->only("edit", "update");
         $this->middleware("can:historial.delete")->only("destroy");
     }
+    public function index(Paciente $paciente)
+{
+    // traer solo los historiales del paciente (paginación recomendable)
+    $historial = $paciente->historial()
+                           ->orderBy('created_at', 'desc')
+                           ->paginate(10); // o ->get() si no quieres paginar
+
+    return view('historial_index', compact('paciente', 'historial'));
+}
+
     public function validarForm(Request $request)
     {
         return $request->validate([
@@ -70,14 +80,14 @@ class HistorialClinicoController extends Controller
 
 public function show($id)
 {
-    $historial = HistorialClinico::where('paciente_id', $id)->get(); // <- get() devuelve una colección
+    $historial = HistorialClinico::with('paciente.relPropietario')->findOrFail($id);
+    $paciente = $historial->paciente;
 
-    if ($historial->isEmpty()) {
-        return redirect()->back()->with('error', 'No hay registros para este paciente.');
-    }
-
-    return view('historial_show', compact('historial'));
+    return view('historial_show', compact('historial', 'paciente'));
 }
+
+
+
 public function generarReporte(Paciente $paciente, HistorialClinico $historial)
 {
     return Pdf::loadView('historial_reporte', compact('paciente', 'historial'))
@@ -125,9 +135,36 @@ public function update(Request $request, $pacienteId, $historialId)
 }
 
 
-    public function destroy(HistorialClinico $historial)
-    {
-        $historial->delete();
-        return redirect()->route('historial.index')->with('success', 'Historial clínico eliminado correctamente.');
+    public function destroy(Paciente $paciente, HistorialClinico $historial)
+{
+    $historial->delete();
+
+    return redirect()->route('historial.index', $paciente->id)
+        ->with('success', 'Historial clínico eliminado correctamente.');
+}
+
+    public function deleted(){
+        $deletedHistoriales = HistorialClinico::onlyTrashed()->paginate(10);
+        $paciente=Paciente::with('historial')->get();
+
+        return view('historial_elim', compact('deletedHistoriales', 'paciente'));
+    }
+    public function restore( Paciente $paciente , $id){
+        $historial = HistorialClinico::onlyTrashed()->findOrFail($id);
+        $paciente = $historial->paciente;
+        $historial->restore();
+        return redirect()->route('historial.deleted',$paciente->id)->with('success', 'Historial clínico restaurado correctamente.');
+    }
+    public function forceDelete($id){
+        $historial = HistorialClinico::onlyTrashed()->findOrFail($id);
+        $historial->forceDelete();
+        return redirect()->route('historial.deleted')->with('success', 'Historial clínico eliminado permanentemente.');
+    }
+    public function forceDeleteAll(){
+        $historiales = HistorialClinico::onlyTrashed()->get();
+        foreach($historiales as $historial){
+            $historial->forceDelete(); 
+        }
+        return redirect()->route('historial.deleted')->with('success', 'Todos los historiales clínicos eliminados permanentemente.');
     }
 }

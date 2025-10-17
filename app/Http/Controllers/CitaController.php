@@ -61,16 +61,32 @@ class CitaController extends Controller
         $citas=Cita::all();
         return view('cita_create', ['pacientes' => $pacientes,"citas"=>$citas,"propietarios"=>$propietarios,"servicios"=>$servicios   ]);
     }
- public function generarPDF($id)
+  public function generarContrato(Cita $cita)
     {
-        // Buscar la cita
-        $cita = Cita::with(['servicio', 'paciente.propietario'])->findOrFail($id);
+        $paciente = $cita->paciente;
+        $propietario = $paciente->propietario;
+        $usuario = auth()->user(); 
+        $servicio = $cita->servicio;
 
-        // Renderizar vista con los datos de la cita
-        $pdf = Pdf::loadView('cita_show', compact('cita'));
+        // Número de contrato
+        $numeroContrato = "CONTRATO-" . str_pad($cita->id, 5, '0', STR_PAD_LEFT);
 
-        // Descargar el archivo o mostrarlo en navegador
-        return $pdf->stream("cita_{$cita->id}.pdf");
+        // Determinar vista según el servicio
+        if (\Illuminate\Support\Str::startsWith(\Illuminate\Support\Str::lower($cita->servicio->nombre), 'cirugía') ||
+            \Illuminate\Support\Str::startsWith(\Illuminate\Support\Str::lower($cita->servicio->nombre), 'sedación') ||
+            \Illuminate\Support\Str::startsWith(\Illuminate\Support\Str::lower($cita->servicio->nombre), 'anestesia')) {
+            $view = 'cirugia_show';
+        } elseif (\Illuminate\Support\Str::startsWith(\Illuminate\Support\Str::lower($cita->servicio->nombre), 'eutanasia')) {
+            $view = 'eutanasia_show';
+        } else {
+            abort(404, 'Este servicio no tiene contrato específico.');
+        }
+
+        $pdf = Pdf::loadView($view, compact(
+            'cita', 'paciente', 'propietario', 'usuario', 'servicio', 'numeroContrato'
+        ));
+
+        return $pdf->stream("contrato-$numeroContrato.pdf");
     }
     public function store(Request $request)
 {
@@ -115,17 +131,25 @@ class CitaController extends Controller
 
     return redirect()->route('citas.index')->with('success', 'Cita creada correctamente');
 }
-    public function show(Cita $cita) {
-        return view('cita_show', ['cita' => $cita]);
-    }
+    
 public function ocultar($id)
 {
     $cita = Cita::findOrFail($id);
     $cita->visible = false;
     $cita->save();
 
-    return response()->json(['success' => true]);
+    return response()->json(['success' => true, 'id' => $cita->id]);
 }
+
+public function restaurar($id)
+{
+    $cita = Cita::findOrFail($id);
+    $cita->visible = true;
+    $cita->save();
+
+    return response()->json(['success' => true, 'id' => $cita->id]);
+}
+
  public function actualizarEstado(Cita $cita)
     {
         $cita->update(['estado' => 'Atendido']);
@@ -230,5 +254,22 @@ public function update(Request $request, $id)
         $cita->delete();
         return redirect()->route('citas.index')->with('success', 'Cita eliminada.');
     }
+    
+    public function restore($id){
+        $cita = Cita::withTrashed()->findOrFail($id);
+        $cita->restore();
+        return redirect()->back()->with('success', 'Cita restaurada correctamente.');
+    }
+    public function forceDelete($id){
+        $cita = Cita::withTrashed()->findOrFail($id);
+        $cita->forceDelete();
+        return redirect()->back()->with('success', 'Cita eliminada permanentemente.');
+    }
+    public function forceDeleteAll(){
+        $citas = Cita::onlyTrashed()->get();
+        foreach($citas as $cita){
+            $cita->forceDelete();  
+        }
+        return redirect()->back()->with('success', 'Todas las citas eliminadas permanentemente.');}
 }
 

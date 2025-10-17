@@ -1,13 +1,22 @@
 <x-app-layout>
 <div class="max-w-3xl mx-auto bg-white p-6 rounded-lg shadow-md">
     <h1 class="text-2xl font-bold mb-4">Editar Cita</h1>
+    @if($errors->any())
+                        <div class="bg-red-100 dark:bg-red-700 border border-red-700 dark:border-red-700 text-white dark:text-white px-4 py-3 rounded relative mb-4" role="alert">
+                            <ul class="list-disc pl-5">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
     <form action="{{ route('citas.update', $cita->id) }}" method="POST" class="grid grid-cols-1 md:grid-cols-2 gap-6">
         @csrf
         @method('PUT')
     
         <!-- Paciente -->
         <div>
-            <label for="paciente_id" class="block text-sm font-medium text-gray-700">Paciente</label>
+            <label for="paciente_id" class="block text-sm font-medium text-gray-700">Paciente*</label>
             <select id="paciente_id" name="paciente_id" class="w-full p-3 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                 <option value="">Seleccionar Paciente</option>
                 @foreach($pacientes as $paciente)
@@ -27,7 +36,7 @@
     
         <!-- Servicio -->
         <div>
-            <label for="servicio_id" class="block text-sm font-medium text-gray-700">Servicio(Seleccione una fecha primero)</label>
+            <label for="servicio_id" class="block text-sm font-medium text-gray-700">Servicio*(Seleccione una fecha primero)</label>
             <select id="servicio_id" name="servicio_id" class="w-full p-3 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                 <option value="">Seleccionar Servicio</option>
                 @foreach($servicios as $servicio)
@@ -40,13 +49,13 @@
     
         <!-- Fecha -->
         <div>
-            <label for="fecha_cita" class="block text-sm font-medium text-gray-700">Fecha de la Cita</label>
+            <label for="fecha_cita" class="block text-sm font-medium text-gray-700">Fecha de la Cita*</label>
             <input type="date" id="fecha_cita" name="fecha_cita" class="w-full p-3 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" value="{{ $cita->fecha_cita }}" required>
         </div>
     
         <!-- Hora -->
         <div>
-            <label for="hora_cita" class="block text-sm font-medium text-gray-700">Hora de la Cita</label>
+            <label for="hora_cita" class="block text-sm font-medium text-gray-700">Hora de la Cita*</label>
             <select id="hora_cita" name="hora_cita" class="w-full p-3 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500" required>
                 <option value="">-- Seleccione una hora --</option>
                 @foreach($horas as $hora)
@@ -60,7 +69,7 @@
     
         <!-- Estado -->
         <div>
-            <label for="estado" class="block text-sm font-medium text-gray-700">Estado de la Cita</label>
+            <label for="estado" class="block text-sm font-medium text-gray-700">Estado de la Cita*</label>
             <select id="estado" name="estado" class="w-full p-3 mt-1 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500">
                 <option value="Pendiente" {{ $cita->estado == 'Pendiente' ? 'selected' : '' }}>Pendiente</option>
                 <option value="Confirmada" {{ $cita->estado == 'Confirmada' ? 'selected' : '' }}>Confirmada</option>

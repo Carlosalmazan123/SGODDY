@@ -19,25 +19,26 @@
                 }, 1000); // 1000 ms = 1 segundo
             </script>
         @endif
-            <div  class="overflow-x-auto overflow-hidden ">
-            <table class="w-full mt-4 border-collapse border  ">
-                <thead class="bg-gray-100 text-gray-700">
+       <div class="bg-white mt-3 shadow-md rounded-lg overflow-hidden border border-gray-200">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm text-gray-700">
+                        <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
                     <tr>
-                        <th class="px-4 py-2 text-left">Nombre</th>
-                        <th class="px-4 py-2 text-left">Categoría</th>
-                        <th class="px-4 py-2 text-left">Precio</th>
+                        <th class="border px-4 py-2 text-left">Nombre</th>
+                        <th class="border px-4 py-2 text-left">Categoría</th>
+                        <th class="border px-4 py-2 text-left">Precio</th>
                    
-                        <th class="px-4 py-2 text-left">Acciones</th>
+                        <th class="border px-4 py-2 text-left">Acciones</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100 bg-white">
                     @foreach($productos as $producto)
                         <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-2 whitespace-nowrap">{{ $producto->nombre }}</td>
-                            <td class="px-4 py-2 whitespace-nowrap">{{ $producto->categoria->nombre }}</td>
-                            <td class="px-4 py-2 whitespace-nowrap">Bs {{ number_format($producto->precio, 2) }}</td>
+                            <td class="border px-4 py-2 whitespace-nowrap">{{ $producto->nombre }}</td>
+                            <td class="border px-4 py-2 whitespace-nowrap">{{ $producto->categoria->nombre }}</td>
+                            <td class="border px-4 py-2 whitespace-nowrap">Bs {{ number_format($producto->precio, 2) }}</td>
                          
-                            <td class="px-4 py-2">
+                            <td class="border px-4 py-2">
                                 <div class="flex flex-wrap gap-2">
                                     @can("producto.show")
                                     <a href="{{ route('productos.show', $producto) }}"
@@ -53,7 +54,7 @@
                                         @method('DELETE')
                                         <button type="submit"
                                                 class="text-red-500 hover:text-red-600 text-xs  py-1 rounded"
-                                                onclick="return confirm('¿Estás seguro de que deseas eliminar este producto?')">
+                                                onclick="return confirm('¿Estás seguro de que deseas eliminarlo?')">
                                                 <ion-icon name="trash-outline" class="h-6 w-6"></ion-icon>
                                         </button>
                                     </form>
@@ -65,7 +66,7 @@
                 </tbody>
             </table>
         </div>
-
+            </div>
         <div class="mt-4">
             {{ $productos->links() }}
         </div>

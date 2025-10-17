@@ -20,10 +20,11 @@
         </script>
     @endif
     
-        <div class="overflow-x-auto mt-4">
-            <table class="min-w-full border border-gray-200">
-                <thead>
-                    <tr class="bg-gray-200">
+       <div class="bg-white mt-3 shadow-md rounded-lg overflow-hidden border border-gray-200">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm text-gray-700">
+                        <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+                    <tr >
                         <th class="border px-4 py-2">Nombre</th>
                         <th class="border px-4 py-2">Contacto</th>
                         <th class="border px-4 py-2">Teléfono</th>
@@ -56,6 +57,8 @@
                     @endforeach
                 </tbody>
             </table>
+                </div>
+            </div>
             <div class="mt-4">
                 {{ $proveedores->links() }}
             </div>

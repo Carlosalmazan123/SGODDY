@@ -9,10 +9,12 @@ self.addEventListener("install", (event) => {
   );
 });
 
-self.addEventListener("fetch", (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request).catch(() => caches.match("/offline.html"));
-    })
-  );
+self.addEventListener("fetch", event => {
+    event.respondWith(
+        fetch(event.request)
+            .then(response => {
+                return response;
+            })
+            .catch(() => caches.match(event.request).then(r => r || caches.match('offline.html')))
+    );
 });

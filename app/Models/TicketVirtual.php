@@ -8,6 +8,8 @@ use Illuminate\Support\Str;
 class TicketVirtual extends Model
 {
     use HasFactory;
+    use \Illuminate\Database\Eloquent\SoftDeletes;
+     protected $dates = ['deleted_at'];
     protected $table = 'tickets_virtuales';
     protected $fillable = [
     'nombre_mascota',

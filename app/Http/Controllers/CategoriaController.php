@@ -70,4 +70,25 @@ public function update(Request $request, $id)
 
         return redirect()->route('categorias.index')->with('success', 'Categoría eliminada correctamente.');
     }
+    public function deleted(){
+        $deletedCategorias = Categoria::onlyTrashed()->paginate(6);
+        return view('categoria_elim', compact('deletedCategorias'));
+    }
+    public function restore($id){
+        $categoria = Categoria::onlyTrashed()->findOrFail($id);
+        $categoria->restore();
+        return redirect()->back()->with('success', 'Categoría restaurada correctamente.');
+    }
+    public function forceDelete($id){
+        $categoria = Categoria::onlyTrashed()->findOrFail($id);
+        $categoria->forceDelete();
+        return redirect()->back()->with('success', 'Categoría eliminada permanentemente.');
+    }
+    public function forceDeleteAll(){
+        $categorias = Categoria::onlyTrashed()->get();
+        foreach($categorias as $categoria){
+            $categoria->forceDelete(); 
+        }
+        return redirect()->back()->with('success', 'Todas las categorías eliminadas permanentemente.');
+    }   
 }

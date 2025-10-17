@@ -17,9 +17,11 @@ return new class extends Migration
             $table->string('apellido');
             $table->string('telefono')->unique();
             $table->text('direccion')->nullable();
-             $table->string('correo')->unique(); // o donde prefieras
+             $table->string('correo')->unique();
+             $table->string('ci');  // o donde prefieras
              $table->boolean('opt_in_whatsapp')->default(false); // o donde prefieras
-            $table->foreignId('user_id')->nullable()->constrained()->onDelete('cascade');
+        $table->softDeletes();
+
             $table->timestamps();
         });
     }

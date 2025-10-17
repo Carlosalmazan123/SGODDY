@@ -72,4 +72,28 @@ class ProveedorController extends Controller
 
         return redirect()->route('proveedores.index')->with('success', 'Proveedor eliminado correctamente.');
     }
+    public function deleted(){
+        $deletedProveedores = Proveedor::onlyTrashed()->paginate(6);
+        return view('proveedor_elim', compact('deletedProveedores'));
+    }
+    public function restore($id){
+        $proveedor = Proveedor::onlyTrashed()->findOrFail($id);
+        $proveedor->restore();
+        return redirect()->back()->with('success', 'Proveedor restaurado correctamente.');
+    }   
+    public function forceDelete($id)
+    {
+        $proveedor = Proveedor::onlyTrashed()->findOrFail($id);
+        $proveedor->forceDelete();
+
+        return redirect()->back()->with('success', 'Proveedor eliminado permanentemente.');
+    }
+    public function forceDeleteAll()
+    {
+        $proveedores = Proveedor::onlyTrashed()->get();
+        foreach ($proveedores as $proveedor) {
+            $proveedor->forceDelete(); 
+        }
+        return redirect()->back()->with('success', 'Todos los proveedores eliminados fueron eliminados permanentemente.');
+    }
 }

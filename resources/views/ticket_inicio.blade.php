@@ -10,23 +10,24 @@
         }">
         <h1 class="text-2xl font-bold mb-4">Listado de Tickets Virtuales</h1>
 
-        <div class="overflow-x-auto">
-            <table class="table-auto w-full border-collapse border border-gray-300">
-                <thead>
-                    <tr class="bg-gray-200 text-center">
-                        <th class="border border-gray-300 px-4 py-2">Cliente</th>
-                        <th class="border border-gray-300 px-4 py-2">Nombre de la mascota</th>
-                        <th class="border border-gray-300 px-4 py-2">Especie</th>
-                        <th class="border border-gray-300 px-4 py-2">Tipo del servicio</th>
-                        <th class="border border-gray-300 px-4 py-2">Fecha</th>
-                        <th class="border border-gray-300 px-4 py-2">Hora</th>
-                        <th class="border border-gray-300 px-4 py-2">Acciones</th>
+        <div class="bg-white mt-3 shadow-md rounded-lg overflow-hidden border border-gray-200">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm text-gray-700">
+                        <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
+                    <tr >
+                        <th class="border  px-4 py-2">Cliente</th>
+                        <th class="border  px-4 py-2">Nombre de la mascota</th>
+                        <th class="border  px-4 py-2">Especie</th>
+                        <th class="border  px-4 py-2">Tipo del servicio</th>
+                        <th class="border  px-4 py-2">Fecha</th>
+                        <th class="border  px-4 py-2">Hora</th>
+                        <th class="border  px-4 py-2">Acciones</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach ($tickets as $ticket)
                     <tr x-show="!filasOcultas.includes({{ $ticket->id }})"
-                        class="text-center {{ $ticket->estado == 'Atendido' ? 'bg-green-100' : 'bg-red-100' }}">
+                        class="text-center {{ $ticket->estado == 'Atendido' ? 'bg-green-100' : '' }}">
                         <td class="border border-gray-300 px-4 py-2">{{ $ticket->user->name }}</td>
                         <td class="border border-gray-300 px-4 py-2">{{ $ticket->nombre_mascota }}</td>
                         <td class="border border-gray-300 px-4 py-2">{{ $ticket->tipo_mascota }}</td>
@@ -52,7 +53,8 @@
                     @endforeach
                 </tbody>
             </table>
-
+                </div>
+        </div>
             <div class="mt-4">
                 {{ $tickets->links() }}
             </div>

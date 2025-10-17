@@ -30,10 +30,9 @@ class PropietarioController extends Controller
             'nombre' => 'required|string|max:255',
             'apellido' => 'required|string|max:255',
             'telefono' => 'required|string|max:15|unique:propietarios',
-            'email' => 'nullable|email|unique:propietarios',
+           
             'direccion' => 'nullable|string',
-            'user_id' => 'nullable|exists:users,id',
-            'correo'=>'nullable|string',
+            'correo'=>'required|string|email|max:255|unique:propietarios',
         ]);
 
         Propietario::create($request->all());
@@ -69,9 +68,74 @@ public function update(Request $request, Propietario $propietario)
     return redirect()->route('propietarios.index')->with('success', 'Propietario actualizado con éxito.');
 }
 
-    public function destroy(Propietario $propietario)
+    // Eliminar (Soft Delete)
+   public function destroy($id)
+{
+    $propietario = Propietario::findOrFail($id);
+
+    // Eliminar (soft delete) también las mascotas asociadas
+    if ($propietario->pacientes()->exists()) {
+        $propietario->pacientes()->delete();
+    }
+
+    $propietario->delete();
+
+    return redirect()->back()->with('success', 'Propietario y sus mascotas eliminados correctamente.');
+}
+
+// Restaurar propietario y sus mascotas
+public function restore($id)
+{
+    $propietario = Propietario::onlyTrashed()->findOrFail($id);
+
+    // Restaurar el propietario
+    $propietario->restore();
+
+    // Restaurar las mascotas asociadas
+    $propietario->pacientes()->onlyTrashed()->restore();
+
+    return redirect()->back()->with('success', 'Propietario y sus mascotas restaurados correctamente.');
+}
+
+
+    // Eliminar permanentemente uno
+    public function forceDelete($id)
     {
-        $propietario->delete();
-        return redirect()->route('propietarios.index')->with('success', 'Propietario eliminado correctamente.');
+        $propietario = Propietario::onlyTrashed()->findOrFail($id);
+         // Eliminar (soft delete) también las mascotas asociadas
+    if ($propietario->pacientes()->exists()) {
+        $propietario->pacientes()->forceDelete();
+    }
+        $propietario->forceDelete();
+
+        return redirect()->back()->with('success', 'Propietario eliminado permanentemente.');
+    }
+
+    // Eliminar permanentemente todos los propietarios eliminados
+    public function forceDeleteAll()
+    {
+        $deletedPropietarios = Propietario::onlyTrashed()->get();
+
+        if ($deletedPropietarios->isEmpty()) {
+            return redirect()->back()->with('error', 'No hay propietarios eliminados para borrar definitivamente.');
+        }
+
+        foreach ($deletedPropietarios as $propietario) {
+             // Eliminar (soft delete) también las mascotas asociadas
+    if ($propietario->pacientes()->exists()) {
+        $propietario->pacientes()->forceDelete();
+    }
+            $propietario->forceDelete();
+            
+        }
+
+        return redirect()->back()->with('success', 'Todos los propietarios eliminados fueron eliminados permanentemente.');
+    }
+
+    // Mostrar los propietarios eliminados
+    public function deleted()
+    {
+        $deletedPropietarios = Propietario::onlyTrashed()->paginate(10);
+        return view('propietario_elim', compact('deletedPropietarios'));
     }
 }

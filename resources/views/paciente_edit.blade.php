@@ -1,13 +1,13 @@
 <x-app-layout>
-    @if($errors->any())
-    <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative w-full max-w-3xl mx-auto" role="alert">
-        <ul>
-            @foreach ($errors->all() as $error)
-                <li class="list-disc">{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
+   @if($errors->any())
+                        <div class="bg-red-100 dark:bg-red-700 border border-red-700 dark:border-red-700 text-white dark:text-white px-4 py-3 rounded relative mb-4" role="alert">
+                            <ul class="list-disc pl-5">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
     <div id="mainContainer" class="w-full max-w-3xl mx-auto p-4 bg-white rounded-lg shadow mt-4 flex flex-col items-center transition-all duration-300">
         <h2 class="text-2xl font-bold mb-4">Editar Paciente</h2>
         
@@ -17,12 +17,12 @@
     
             <div class="flex space-x-4 ">
                 <div class="w-1/2">
-                    <label class="block font-medium">Nombre del Paciente</label>
+                    <label class="block font-medium">Nombre del Paciente*</label>
                     <input type="text" name="nombre" value="{{ old('nombre', $paciente->nombre) }}" class="w-full border-gray-300 rounded-md" required>
                 </div>
     
                 <div class="w-1/2">
-                    <label class="block font-medium">Especie</label>
+                    <label class="block font-medium">Especie*</label>
                     <div id="especie-container">
                         <select name="especie" id="especie-select" class="w-full border-gray-300 rounded-md" required>
                             <option value="">Selecciona una especie</option>
@@ -40,7 +40,7 @@
     
             <div class="flex space-x-4 mb-4">
                 <div class="w-1/2">
-                    <label class="block font-medium">Raza</label>
+                    <label class="block font-medium">Raza*</label>
                     <div id="raza-container">
                         <select name="raza" id="raza-select" class="w-full border-gray-300 rounded-md">
                             <option value="">Selecciona una raza</option>
@@ -51,7 +51,7 @@
                 </div>
     
         <div class="w-1/2">
-    <label class="block font-medium">Año de Nacimiento</label>
+    <label class="block font-medium">Año de Nacimiento*</label>
     <select id="anio" name="anio" class="w-full border-gray-300 rounded-md" required>
         @php $anioActual = date('Y'); @endphp
         @for ($i = $anioActual; $i >= 1990; $i--)
@@ -68,14 +68,14 @@
 </div>
     
                 <div class="w-1/2">
-                    <label for="color" class="block font-medium">Color</label>
+                    <label for="color" class="block font-medium">Color*</label>
                     <input type="text" name="color" value="{{ $paciente->color }}" class="w-full border-gray-300 rounded-md" required>
                 </div>
             </div>
     
             <div class="flex space-x-4 mb-4">
                 <div class="w-1/2">
-                    <label for="peso" class="block font-medium">Peso en kg</label>
+                    <label for="peso" class="block font-medium">Peso en kg*</label>
                     <input type="number" name="peso" step="0.01" value="{{ $paciente->peso }}" class="w-full border-gray-300 rounded-md" required>
                 </div>
                 <div class="w-1/2">
@@ -97,7 +97,7 @@
                 </div>
             </div>
             <div class="w-full">
-                <label for="propietario_id">Propietario:</label>
+                <label for="propietario_id">Propietario*:</label>
                 <select name="propietario_id" id="propietario_id" class="w-full border-gray-300 rounded-md">
                     <option value="">Seleccione un propietario</option>
                     @foreach ($propietarios as $propietario)

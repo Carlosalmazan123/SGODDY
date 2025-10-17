@@ -23,6 +23,7 @@ return new class extends Migration
             $table->decimal('peso', 10, 1);
             $table->foreignId('propietario_id')->constrained('propietarios')->references('id')->onDelete('cascade');
             $table->string('imagen')->nullable(); 
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -224,7 +224,7 @@ function marcarTodasComoLeidas() {
                     @endcan
                     @can("factura.index")
                     <a href="{{ route('facturas.index') }}" class="block border bg-white rounded px-3 py-2">
-                        <ion-icon name="receipt-outline" class="h-5 w-5   "></ion-icon>Facturas</a>
+                        <ion-icon name="receipt-outline" class="h-5 w-5   "></ion-icon>Ventas</a>
                         @endcan
             @can("inventario.index")
                  <a href="{{ route('inventario.index') }}" class="block border bg-white rounded px-3 py-2">
@@ -237,7 +237,9 @@ function marcarTodasComoLeidas() {
                 @can("user.index")
                 <a href="{{ route('users.index') }}" class="block border bg-white rounded px-3 py-2">
                     <ion-icon name="people-outline"></ion-icon>Usuarios</a> 
-                    @endcan   
+                    @endcan  
+                    <a href="{{route('eliminado.index') }}" class="block border bg-white rounded px-3 py-2">
+                    <ion-icon name="trash-outline"></ion-icon>Eliminados</a>  
             <x-responsive-nav-link :href="route('profile.edit')">
                 <ion-icon name="person"></ion-icon>  {{ __('Perfil') }}
             </x-responsive-nav-link>

@@ -136,7 +136,7 @@ if (!empty($validatedData['paciente_id'])) { // Verificar si existe antes de acc
     {
         return view('ticket_show', compact('ticket'));
     }
-   public function reservarCita(Request $request)
+ public function reservarCita(Request $request)
 {
     try {
         if (!Auth::check()) {
@@ -146,44 +146,53 @@ if (!empty($validatedData['paciente_id'])) { // Verificar si existe antes de acc
         $usuarioId = $request->input('user_id') ?? auth()->id();
 
         $request->validate([
-            'fecha_cita' => 'required|date|after_or_equal:today',
-            'hora_cita' => 'required|string',
-            'servicio_id' => 'required|exists:servicios,id',
-    
+            'fecha_cita'   => 'required|date|after_or_equal:today',
+            'hora_cita'    => 'required|string',
+            'servicio_id'  => 'required|exists:servicios,id',
+
             // Validamos solo si paciente_id no se envía
             'nombre_mascota' => 'required_without:paciente_id|string',
-            'tipo_mascota' => 'required_without:paciente_id|string',
-            'paciente_id' => 'nullable|exists:pacientes,id',
+            'tipo_mascota'   => 'required_without:paciente_id|string',
+            'paciente_id'    => 'nullable|exists:pacientes,id',
         ]);
 
-        $fecha = $request->input('fecha_cita');
-        $hora = $request->input('hora_cita');
+        $fecha      = $request->input('fecha_cita');
+        $hora       = $request->input('hora_cita');
         $servicioId = $request->input('servicio_id');
         $pacienteId = $request->input('paciente_id');
+
+        // ✅ Validación de fecha y hora contra el servidor
+        $fechaHoraSeleccionada = \Carbon\Carbon::parse("$fecha $hora");
+        if ($fechaHoraSeleccionada->isPast()) {
+            return response()->json(['error' => '⛔ No se pueden reservar horarios pasados.'], 422);
+        }
+
         // Ver si se seleccionó un paciente registrado
         if ($pacienteId) {
             $paciente = \App\Models\Paciente::find($pacienteId);
             $nombreMascota = $paciente->nombre;
-            $tipoMascota = $paciente->especie;
+            $tipoMascota   = $paciente->especie;
         } else {
-           $mascotaInput = $request->input('nombre_mascota');
-$tipoMascotaInput = $request->input('tipo_mascota');
-// Si el input es un número, asumimos que es un ID de paciente
-if (is_numeric($mascotaInput)) {
-    $paciente = \App\Models\Paciente::find($mascotaInput);
+            $mascotaInput     = $request->input('nombre_mascota');
+            $tipoMascotaInput = $request->input('tipo_mascota');
 
-    if ($paciente) {
-        $nombreMascota = $paciente->nombre;
-        $tipoMascota = $paciente->especie;
-    } else {
-        return response()->json(['error' => '⚠️ Mascota no encontrada.'], 404);
-    }
-} else {
-    // En caso de que el usuario haya escrito directamente el nombre
-    $nombreMascota = $mascotaInput;
-    $tipoMascota = $tipoMascotaInput;
-}
+            // Si el input es un número, asumimos que es un ID de paciente
+            if (is_numeric($mascotaInput)) {
+                $paciente = \App\Models\Paciente::find($mascotaInput);
+
+                if ($paciente) {
+                    $nombreMascota = $paciente->nombre;
+                    $tipoMascota   = $paciente->especie;
+                } else {
+                    return response()->json(['error' => '⚠️ Mascota no encontrada.'], 404);
+                }
+            } else {
+                // En caso de que el usuario haya escrito directamente el nombre
+                $nombreMascota = $mascotaInput;
+                $tipoMascota   = $tipoMascotaInput;
+            }
         }
+
         return DB::transaction(function () use (
             $fecha, $hora, $servicioId, $usuarioId,
             $nombreMascota, $tipoMascota,
@@ -193,26 +202,31 @@ if (is_numeric($mascotaInput)) {
                 ->where('hora_cita', $hora)
                 ->lockForUpdate()
                 ->first();
+
             if ($citaExistente) {
                 return response()->json(['error' => '⛔ Esta hora ya está ocupada.'], 409);
             }
+
             $servicio = \App\Models\Servicio::find($servicioId);
+
             $ticketId = DB::table('tickets_virtuales')->insertGetId([
-                'user_id' => $usuarioId,
-                'servicio_id' => $servicioId,
-                'nombre_mascota' => $nombreMascota,
-                'tipo_mascota' => $tipoMascota,
-                'fecha_cita' => $fecha,
-                'hora_cita' => $hora,
-                'title' => "{$hora} - {$servicio->nombre}",
-                'start' => $fecha . ' ' . $hora,
-                'end' => $fecha . ' ' . $hora,
-                'color' => "#3F99F5",
-                'created_at' => now(),
-                'updated_at' => now(),
+                'user_id'       => $usuarioId,
+                'servicio_id'   => $servicioId,
+                'nombre_mascota'=> $nombreMascota,
+                'tipo_mascota'  => $tipoMascota,
+                'fecha_cita'    => $fecha,
+                'hora_cita'     => $hora,
+                'title'         => "{$hora} - {$servicio->nombre}",
+                'start'         => $fecha . ' ' . $hora,
+                'end'           => $fecha . ' ' . $hora,
+                'color'         => "#3F99F5",
+                'created_at'    => now(),
+                'updated_at'    => now(),
             ]);
+
             $ticket = \App\Models\TicketVirtual::with('servicio')->find($ticketId);
 
+            // Notificar administradores
             $admins = \App\Models\User::whereHas('roles', function ($q) {
                 $q->where('name', 'admin');
             })->get();
@@ -221,23 +235,17 @@ if (is_numeric($mascotaInput)) {
                 $admin->notify(new \App\Notifications\ReservaCreada($ticket));
             }
 
-            $propietario = \App\Models\Propietario::where('user_id', $usuarioId)->first();
-            if ($propietario && $propietario->email) {
-                $userPropietario = \App\Models\User::find($usuarioId);
-                if ($userPropietario) {
-                    $userPropietario->notify(new \App\Notifications\NotificarPropietarioReserva($ticket));
-                }
-            }
+            
 
             return response()->json([
-                'message' => 'Cita reservada con éxito',
-                'ticket_id' => $ticket->id,
-                'fecha_cita' => $ticket->fecha_cita,
-                'hora_cita' => $ticket->hora_cita,
-                'servicio' => $ticket->servicio->nombre,
+                'message'        => '✅ Cita reservada con éxito',
+                'ticket_id'      => $ticket->id,
+                'fecha_cita'     => $ticket->fecha_cita,
+                'hora_cita'      => $ticket->hora_cita,
+                'servicio'       => $ticket->servicio->nombre,
                 'nombre_mascota' => $ticket->nombre_mascota,
-                'tipo_mascota' => $ticket->tipo_mascota,
-                'precio_servicio' => $ticket->servicio->precio,
+                'tipo_mascota'   => $ticket->tipo_mascota,
+                'precio_servicio'=> $ticket->servicio->precio,
             ]);
         });
 
@@ -248,6 +256,7 @@ if (is_numeric($mascotaInput)) {
         return response()->json(['error' => '⚠️ Error interno en el servidor.'], 500);
     }
 }
+
 
     public function ocultar($id)
 {

@@ -2,11 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Models\Categoria;
+use App\Models\Producto;
+use App\Models\Propietario;
+use App\Models\Proveedor;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-
-
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -23,9 +25,126 @@ class DatabaseSeeder extends Seeder
             "name"=>"admin",
             "email"=>"admin@admin.com",
             "password"=>bcrypt("1234"),
-            
+          
         ]);
-        
+        $propietario=Propietario::create([
+            "nombre"=>"Josue Carlos",
+            "apellido"=>"Almazán Paredes",
+            "telefono"=>"72431122",
+            "direccion"=>"admin",
+            "correo"=>"josuealmazam142@gmail.com",
+            "ci"=>"10626599",
+            "opt_in_whatsapp"=>true,
+         ]);
+         /**
+         * Categorías
+         */
+        $categoria1 = Categoria::create([
+            "nombre" => "Medicamentos",
+            "descripcion" => "Fármacos veterinarios para diversas especies."
+        ]);
+
+        $categoria2 = Categoria::create([
+            "nombre" => "Accesorios",
+            "descripcion" => "Collares, correas, juguetes y artículos para mascotas."
+        ]);
+
+        $categoria3 = Categoria::create([
+            "nombre" => "Alimentos",
+            "descripcion" => "Piensos, croquetas y suplementos nutricionales."
+        ]);
+
+        $categoria4 = Categoria::create([
+            "nombre" => "Higiene",
+            "descripcion" => "Shampoo, cepillos, cortaúñas y artículos de aseo."
+        ]);
+
+        /**
+         * Proveedores
+         */
+        $proveedor1 = Proveedor::create([
+            "nombre" => "VetPharma Bolivia",
+            "contacto" => "Lic. Ramírez",
+            "telefono" => "76543210",
+            "email" => "contacto@vetpharma.bo",
+            "direccion" => "Av. Busch #456, La Paz"
+        ]);
+
+        $proveedor2 = Proveedor::create([
+            "nombre" => "Mascotas & Salud",
+            "contacto" => "Ing. Fernández",
+            "telefono" => "78965412",
+            "email" => "ventas@mascotasalud.com",
+            "direccion" => "Calle Comercio #123, Cochabamba"
+        ]);
+
+        $proveedor3 = Proveedor::create([
+            "nombre" => "PetWorld Importaciones",
+            "contacto" => "Srta. Gutiérrez",
+            "telefono" => "70112233",
+            "email" => "info@petworld.com",
+            "direccion" => "Av. América #321, Santa Cruz"
+        ]);
+
+        /**
+         * Productos
+         */
+        Producto::create([
+            "nombre" => "Vacuna Rabia",
+            "categoria_id" => $categoria1->id,
+            "precio" => 50.00,
+            "unidad" => "dosis",
+            "fecha_vencimiento" => "2026-12-31",
+            "check" => true,
+            "proveedor_id" => $proveedor1->id,
+            "imagen" => null
+        ]);
+
+        Producto::create([
+            "nombre" => "Antiparasitario Interno",
+            "categoria_id" => $categoria1->id,
+            "precio_compra" => 20.00,
+            "precio" => 35.00,
+            "unidad" => "tableta",
+            "fecha_vencimiento" => "2025-08-20",
+            "check" => true,
+            "proveedor_id" => $proveedor1->id,
+            "imagen" => null
+        ]);
+
+        Producto::create([
+            "nombre" => "Collar Antipulgas",
+            "categoria_id" => $categoria2->id,
+            "precio_compra" => 50.00,
+            "precio" => 80.00,
+            "unidad" => "unidad",
+            "check" => false,
+            "proveedor_id" => $proveedor2->id,
+            "imagen" => null
+        ]);
+
+        Producto::create([
+            "nombre" => "Croquetas Premium Perro Adulto",
+            "categoria_id" => $categoria3->id,
+            "precio_compra" => 150.00,
+            "precio" => 230.00,
+            "unidad" => "kilo",
+            "fecha_vencimiento" => "2025-06-01",
+            "check" => true,
+            "proveedor_id" => $proveedor3->id,
+            "imagen" => null
+        ]);
+
+        Producto::create([
+            "nombre" => "Shampoo Antipulgas",
+            "categoria_id" => $categoria4->id,
+            "precio_compra" => 40.00,
+            "precio" => 60.00,
+            "unidad" => "litro",
+            "check" => false,
+            "proveedor_id" => $proveedor2->id,
+            "imagen" => null
+        ]);
         Permission::create(["name"=>"user.index" ]);
         Permission::create(["name"=>"user.create" ]);
         Permission::create(["name"=>"user.edit"]);

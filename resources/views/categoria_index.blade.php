@@ -3,7 +3,7 @@
       
         <h2 class="text-2xl font-bold mb-4">Categorías</h2>
         
-        <a href="{{ route('categorias.create') }}" class="px-4 py-2 mb-4 bg-blue-500 text-white rounded">+Agregar Categoría</a>
+        <a href="{{ route('categorias.create') }}" class=" px-4 py-2 mb-4 bg-blue-500 text-white rounded">+Agregar Categoría</a>
         
 
         @if (session('success'))
@@ -21,21 +21,22 @@
             }, 1000); // 1000 ms = 1 segundo
         </script>
     @endif
-        <div  class="overflow-x-auto overflow-hidden ">
-        <table class="w-full mt-4 border-collapse border  ">
-                <thead class="bg-gray-100 text-gray-700">
+        <div class="bg-white shadow-md mt-3 rounded-lg overflow-hidden border border-gray-200">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-sm  text-gray-700">
+                        <thead class="bg-gray-100 text-gray-700 uppercase text-xs">
                     <tr>
-                        <th class="px-4 py-2 text-left">Nombre</th>
-                        <th class="px-4 py-2 text-left">Descripción</th>
-                        <th class="px-4 py-2 text-left">Acciones</th>
+                        <th class="border px-4 py-2 text-left">Nombre</th>
+                        <th class="border px-4 py-2 text-left">Descripción</th>
+                        <th class="border px-4 py-2 text-left">Acciones</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-100">
                     @foreach($categorias as $categoria)
                         <tr class="hover:bg-gray-50">
-                            <td class="px-4 py-2 whitespace-nowrap">{{ $categoria->nombre }}</td>
-                            <td class="px-4 py-2 whitespace-normal">{{ $categoria->descripcion }}</td>
-                            <td class="px-4 py-2">
+                            <td class="border px-4 py-2 whitespace-nowrap">{{ $categoria->nombre }}</td>
+                            <td class="border px-4 py-2 whitespace-normal">{{ $categoria->descripcion }}</td>
+                            <td class="border px-4 py-2">
                                 <div class="flex flex-wrap gap-2">
                                     @can('categoria.edit')
                                     <a href="{{ route('categorias.edit', $categoria) }}"
@@ -58,6 +59,9 @@
                     @endforeach
                 </tbody>
             </table>
+                </div>
+
+            </div>
             <div class="mt-4">
                 {{ $categorias->links() }}
             </div>

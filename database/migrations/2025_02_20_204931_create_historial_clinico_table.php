@@ -21,6 +21,7 @@ return new class extends Migration
             $table->text('tratamiento',2000); // Cambiado a text
             $table->text('observaciones',2000); // Cambiado a text
             $table->foreignId('paciente_id')->constrained('pacientes')->onDelete('cascade');
+            $table->softDeletes();
             $table->timestamps();
         });
         

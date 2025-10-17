@@ -3,17 +3,27 @@
     <div class="container mx-auto p-6">
         <div class="bg-white shadow-md rounded-lg p-8 max-w-4xl mx-auto">
         <h1 class="text-3xl font-semibold mb-4">Registrar Movimiento de Inventario</h1>
-    
+    @if($errors->any())
+                        <div class="bg-red-100 dark:bg-red-700 border border-red-700 dark:border-red-700 text-white dark:text-white px-4 py-3 rounded relative mb-4" role="alert">
+                            <ul class="list-disc pl-5">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
         <form action="{{ route('inventario.store') }}" method="POST">
             @csrf
             <div class="space-y-4">
                 <!-- Producto -->
                 <div>
-                    <label for="producto_id" class="block text-gray-700 font-medium">Producto</label>
-                    <select name="producto_id" id="producto_id" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <label for="producto_id" class="block text-gray-700 font-medium">Producto*</label>
+                    <select name="producto_id" id="producto_id" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                         <option value="">Seleccione un producto</option>
-                        @foreach($productos as $producto)
-                            <option value="{{ $producto->id }}">{{ $producto->nombre }}</option>
+                        @foreach($productos as $p)
+                            <option value="{{ $p->id }}" data-stock="{{ $p->stock_actual }}">
+                                {{ $p->nombre }} (Stock actual: {{ number_format($p->stock_actual) }})
+                            </option>
                         @endforeach
                     </select>
                     @error('producto_id')
@@ -23,7 +33,7 @@
     
                 <!-- Cantidad -->
                 <div>
-                    <label for="stock" class="block text-gray-700 font-medium">Stock</label>
+                    <label for="stock" class="block text-gray-700 font-medium">Stock*</label>
                     <input type="number" name="stock" id="stock" value="{{ old('stock') }}" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                     @error('stock')
                         <p class="text-red-500 text-sm mt-2">{{ $message }}</p>
@@ -32,7 +42,7 @@
     
                 <!-- Tipo de Movimiento -->
                 <div>
-                    <label for="tipo_movimiento" class="block text-gray-700 font-medium">Tipo de Movimiento</label>
+                    <label for="tipo_movimiento" class="block text-gray-700 font-medium">Tipo de Movimiento*</label>
                     <select name="tipo_movimiento" id="tipo_movimiento" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="entrada" {{ old('tipo_movimiento') == 'entrada' ? 'selected' : '' }}>Entrada</option>
                         <option value="salida" {{ old('tipo_movimiento') == 'salida' ? 'selected' : '' }}>Salida</option>
@@ -61,5 +71,5 @@
         </form>
     </div>
     </div>
-    
+
 </x-app-layout>
